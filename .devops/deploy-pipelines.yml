@@ -1,0 +1,113 @@
+variables:
+  GRADLE_USER_HOME: $(Pipeline.Workspace)/.gradle
+
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+parameters:
+  - name: 'RELEASE_SEMVER'
+    displayName: 'When packing a release, define the version bump to apply (release is done automatically when deploying on UAT and skipped on DEV) '
+    type: string
+    values:
+      - major
+      - minor
+      - patch
+    default: patch
+
+stages:
+  -   stage: BuildEndUnitTest
+      jobs:
+        - job: make_buildEndUnitTest
+          steps:
+            - task: Cache@2
+              inputs:
+                key: 'gradle | "$(Agent.OS)" | gradle/wrapper/gradle-wrapper.properties | build.gradle.kts'
+                restoreKeys: |
+                  gradle | "$(Agent.OS)"
+                  gradle
+                path: $(GRADLE_USER_HOME)
+              displayName: Cache Gradle
+
+            - task: JavaToolInstaller@0
+              displayName: 'Set up JDK 25'
+              inputs:
+                versionSpec: '25'
+                jdkArchitectureOption: 'x64'
+                jdkSourceOption: 'PreInstalled'
+
+            - script: ./gradlew clean build --no-daemon
+              displayName: 'Build and test'
+
+  - stage: Release
+    dependsOn: BuildEndUnitTest
+    jobs:
+      - job: make_release
+        steps:
+          - checkout: self
+            displayName: 'Checkout'
+            persistCredentials: true
+
+          - task: Bash@3
+            displayName: 'Bump version'
+            name: next_version
+            env:
+              RELEASE_SEMVER: '${{ parameters.RELEASE_SEMVER }}'
+            inputs:
+              targetType: inline
+              script: |
+                set -euo pipefail
+
+                git config user.email "$(GIT_MAIL)"
+                git config user.name "$(GIT_USERNAME)"
+                git checkout main
+                git pull --ff-only origin main
+
+                CURRENT_VERSION=$(sed -n 's/^version=//p' gradle.properties)
+                if [[ ! "${CURRENT_VERSION}" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+                  echo "##vso[task.logissue type=error]Invalid version in gradle.properties: ${CURRENT_VERSION}"
+                  exit 1
+                fi
+
+                MAJOR="${BASH_REMATCH[1]}"
+                MINOR="${BASH_REMATCH[2]}"
+                PATCH="${BASH_REMATCH[3]}"
+                case "${RELEASE_SEMVER}" in
+                  major) NEXT_VERSION="$((MAJOR + 1)).0.0" ;;
+                  minor) NEXT_VERSION="${MAJOR}.$((MINOR + 1)).0" ;;
+                  patch) NEXT_VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))" ;;
+                  *)
+                    echo "##vso[task.logissue type=error]Unsupported semantic version bump: ${RELEASE_SEMVER}"
+                    exit 1
+                    ;;
+                esac
+
+                sed -i "s/^version=.*/version=${NEXT_VERSION}/" gradle.properties
+                git add gradle.properties
+                git commit -m "Bump version to ${NEXT_VERSION} [skip ci]"
+                git push origin main
+
+                echo "##vso[task.setvariable variable=value;isOutput=true]${NEXT_VERSION}"
+
+          - task: Bash@3
+            displayName: 'Set release variables'
+            inputs:
+              targetType: inline
+              script: |
+                HEAD_SHA=$(git rev-parse HEAD)
+                echo "##vso[task.setvariable variable=releaseSha]${HEAD_SHA}"
+                echo "##vso[task.setvariable variable=releaseTag]$(next_version.value)"
+                echo "##vso[task.setvariable variable=releaseTitle]Release $(next_version.value)"
+
+          - task: GitHubRelease@0
+            displayName: 'Create GitHub release'
+            inputs:
+              gitHubConnection: $(GITHUB_CONNECTION)
+              repositoryName: $(Build.Repository.Name)
+              action: create
+              target: $(releaseSha)
+              tagSource: manual
+              tag: $(releaseTag)
+              title: $(releaseTitle)
+              addChangelog: true
