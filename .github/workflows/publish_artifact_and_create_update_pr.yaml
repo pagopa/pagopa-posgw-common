@@ -4,14 +4,13 @@ on:
   release:
     types: [ published ]
 
-permissions:
-  pull-requests: write
-  packages: write
-
 jobs:
   deploy_artifact:
     name: Deploy github package
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/publish-maven-artifacts
@@ -27,6 +26,8 @@ jobs:
 
     name: Create PR on ${{ matrix.repo }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: deploy_artifact
     steps:
       - name: Get latest release tag from pagopa-posgw-common
