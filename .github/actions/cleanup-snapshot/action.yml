@@ -17,10 +17,7 @@ runs:
       env:
         BRANCH_NAME: ${{ inputs.branch_name }}
       run: |
-        CURRENT_VERSION=$(
-          ./gradlew properties --property version --quiet |
-            sed -n 's/^version: //p'
-        )
+        CURRENT_VERSION=$(./gradlew printVersion -Psnapshot=false  -q | sed -n 's/^Version: \([0-9.]*\)/\1/p')
         if [[ -z "${CURRENT_VERSION}" ]]; then
           echo "::error::Could not determine the project version"
           exit 1
