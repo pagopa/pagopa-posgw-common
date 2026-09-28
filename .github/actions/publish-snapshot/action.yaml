@@ -37,9 +37,10 @@ runs:
         echo "Current version: ${CURRENT_VERSION}"
         BRANCH=$(echo "${BRANCH_NAME}" | sed 's/[^a-zA-Z0-9-]/-/g')
         COMMIT_ID=$(git rev-parse --short HEAD)
-        SNAPSHOT_VERSION="${CURRENT_VERSION}-${BRANCH}-${COMMIT_ID}-SNAPSHOT"
+        VERSION_CLASSIFIER="${BRANCH}-${COMMIT_ID}-SNAPSHOT"
+        SNAPSHOT_VERSION="${CURRENT_VERSION}-${VERSION_CLASSIFIER}"
         echo "Snapshot version: ${SNAPSHOT_VERSION}"
-        echo "SNAPSHOT_VERSION=${SNAPSHOT_VERSION}" >> "${GITHUB_ENV}"
+        echo "VERSION_CLASSIFIER=${VERSION_CLASSIFIER}" >> "${GITHUB_ENV}"
 
     - name: Delete existing snapshot version
       uses: ./.github/actions/cleanup-snapshot
@@ -52,7 +53,7 @@ runs:
         if [[ "${ACT:-false}" == "true" ]]; then
           echo "Skipping deploy in local environment (ACT=true)"
         else
-          ./gradlew publish -Pversion="${SNAPSHOT_VERSION}"
+          ./gradlew publish -PversionClassifier="${VERSION_CLASSIFIER}"
         fi
       env:
         GITHUB_ACTOR: ${{ github.actor }}
