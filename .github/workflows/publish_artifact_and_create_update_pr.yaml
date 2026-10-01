@@ -66,7 +66,25 @@ jobs:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
         run: |
-          ./gradlew dependencies --write-locks --write-verification-metadata sha256
+          latest_tag="${{ steps.get_latest_tag.outputs.LATEST_TAG }}"
+          max_attempts=6
+
+          for attempt in $(seq 1 "$max_attempts"); do
+            ./gradlew dependencies --refresh-dependencies --write-locks --write-verification-metadata sha256
+
+            if grep -q "it.pagopa:pagopa-posgw-common:${latest_tag}=" gradle.lockfile &&
+              grep -q "<component group=\"it.pagopa\" name=\"pagopa-posgw-common\" version=\"${latest_tag}\">" gradle/verification-metadata.xml; then
+              exit 0
+            fi
+
+            if [ "$attempt" -eq "$max_attempts" ]; then
+              echo "Dependency lock and verification metadata were not updated to ${latest_tag}" >&2
+              exit 1
+            fi
+
+            echo "Artifacts for ${latest_tag} are not fully available yet; retrying in 15 seconds (${attempt}/${max_attempts})..."
+            sleep 15
+          done
         shell: bash
 
       - name: Create Pull Request
