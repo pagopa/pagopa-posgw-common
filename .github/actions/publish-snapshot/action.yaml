@@ -37,7 +37,7 @@ runs:
         echo "Current version: ${CURRENT_VERSION}"
         BRANCH=$(echo "${BRANCH_NAME}" | sed 's/[^a-zA-Z0-9-]/-/g')
         COMMIT_ID=$(git rev-parse --short HEAD)
-        VERSION_CLASSIFIER="${BRANCH}-${COMMIT_ID}-SNAPSHOT"
+        VERSION_CLASSIFIER="${BRANCH}-${COMMIT_ID}"
         SNAPSHOT_VERSION="${CURRENT_VERSION}-${VERSION_CLASSIFIER}"
         echo "Snapshot version: ${SNAPSHOT_VERSION}"
         echo "VERSION_CLASSIFIER=${VERSION_CLASSIFIER}" >> "${GITHUB_ENV}"
