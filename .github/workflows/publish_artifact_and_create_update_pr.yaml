@@ -53,12 +53,17 @@ jobs:
           replace: "val posgwCommonVersion = \"${{ steps.get_latest_tag.outputs.LATEST_TAG }}\""
           regex: true
           include: "build.gradle.kts"
-
+      #this step configure jdk for gradle including GITHUB token injection in configurations
+      - name: Set up JDK 25
+        uses: actions/setup-java@0ab4596768b603586c0de567f2430c30f5b0d2b0 # v3
+        with:
+          java-version: '25'
+          distribution: 'corretto'
+          cache: 'gradle'
       - name: Update dep lock & verification files
         id: update_lock_dependencies
         run: |
-          ./gradlew dependencies --write-locks 
-          ./gradlew dependencies --write-verification-metadata sha256
+          ./gradlew dependencies --write-locks --write-verification-metadata sha256
         shell: bash
 
       - name: Create Pull Request
