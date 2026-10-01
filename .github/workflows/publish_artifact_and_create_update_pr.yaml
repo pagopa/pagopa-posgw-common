@@ -62,6 +62,9 @@ jobs:
           cache: 'gradle'
       - name: Update dep lock & verification files
         id: update_lock_dependencies
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
         run: |
           ./gradlew dependencies --write-locks --write-verification-metadata sha256
         shell: bash
