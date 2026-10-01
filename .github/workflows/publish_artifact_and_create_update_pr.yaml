@@ -28,7 +28,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: write
     needs: deploy_artifact
     steps:
       - name: Get latest release tag from pagopa-posgw-common
@@ -65,7 +64,7 @@ jobs:
         uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38
         with:
           branch: "update-common-${{ steps.get_latest_tag.outputs.LATEST_TAG }}"
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
           author: pagopa-platform-github-bot <pagopa-github-bot@pagopa.it>
           committer: pagopa-platform-github-bot <pagopa-platform-github-bot@pagopa.it>
           commit-message: "chore(deps): update `common` version to ${{ steps.get_latest_tag.outputs.LATEST_TAG }}"
