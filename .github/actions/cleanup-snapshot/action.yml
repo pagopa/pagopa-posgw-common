@@ -52,7 +52,7 @@ runs:
             );
             const toDelete = versions.filter(
               version => version.name.startsWith(snapshotVersionDelete) &&
-                version.name.endsWith("-SNAPSHOT")
+                version.name.includes("SNAPSHOT")
             );
             core.info(`Found ${toDelete.length} versions to delete`);
             for (const version of toDelete) {
