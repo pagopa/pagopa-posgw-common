@@ -56,7 +56,8 @@ jobs:
       - name: Update dep lock & verification files
         id: update_lock_dependencies
         run: |
-          ./gradlew dependencies --write-locks --write-verification-metadata sha256
+          ./gradlew dependencies --write-locks 
+          ./gradlew dependencies --write-verification-metadata sha256
         shell: bash
 
       - name: Create Pull Request
