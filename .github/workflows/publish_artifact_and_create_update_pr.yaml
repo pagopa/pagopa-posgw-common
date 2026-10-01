@@ -45,14 +45,6 @@ jobs:
         with:
           repository: pagopa/${{ matrix.repo }}
 
-      - name: Replace old version with new version (Maven)
-        uses: jacobtomlinson/gha-find-replace@a51bbcd94d000df9ca0fcb54ec8be69aad8374b0
-        with:
-          find: "<pagopa-posgw-common.version>\\d+\\.\\d+\\.\\d+</pagopa-posgw-common.version>"
-          replace: "<pagopa-posgw-common.version>${{ steps.get_latest_tag.outputs.LATEST_TAG }}</pagopa-posgw-common.version>"
-          regex: true
-          include: "pom.xml"
-
       - name: Replace old version with new version (Gradle)
         uses: jacobtomlinson/gha-find-replace@a51bbcd94d000df9ca0fcb54ec8be69aad8374b0
         with:
@@ -61,11 +53,18 @@ jobs:
           regex: true
           include: "build.gradle.kts"
 
+      - name: Update dep lock & verification files
+        id: update_lock_dependencies
+        run: |
+          ./gradlew dependencies --write-locks 
+          ./gradlew dependencies --write-verification-metadata sha256
+        shell: bash
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38
         with:
           branch: "update-common-${{ steps.get_latest_tag.outputs.LATEST_TAG }}"
-          token: ${{ secrets.PR_GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           author: pagopa-platform-github-bot <pagopa-github-bot@pagopa.it>
           committer: pagopa-platform-github-bot <pagopa-platform-github-bot@pagopa.it>
           commit-message: "chore(deps): update `common` version to ${{ steps.get_latest_tag.outputs.LATEST_TAG }}"
