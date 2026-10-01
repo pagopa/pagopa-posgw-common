@@ -29,6 +29,7 @@ jobs:
     permissions:
       contents: read
     needs: deploy_artifact
+    environment: prod
     steps:
       - name: Get latest release tag from pagopa-posgw-common
         id: get_latest_tag
