@@ -25,3 +25,4 @@ tags presence during PR analysis:
 
 For the check to be successfully passed only one of the `Application version` labels labels must be present for a given
 PR or the `skip-release` for skipping release step
+
