@@ -48,7 +48,7 @@ jobs:
       - name: Replace old version with new version (Gradle)
         uses: jacobtomlinson/gha-find-replace@a51bbcd94d000df9ca0fcb54ec8be69aad8374b0
         with:
-          find: "val posgwCommonVersion = \"\\d+\\.\\d+\\.\\d+\""
+          find: "val posgwCommonVersion = \"\\d+\\.\\d+\\.\\d+.*\""
           replace: "val posgwCommonVersion = \"${{ steps.get_latest_tag.outputs.LATEST_TAG }}\""
           regex: true
           include: "build.gradle.kts"
