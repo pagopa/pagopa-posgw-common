@@ -337,6 +337,25 @@ class ReactiveRedisTemplateWrapperTest {
     }
 
     @Test
+    fun `Should scan all keys in keyspace`() {
+        // pre-requisites
+        val keys = listOf("key1", "key2")
+        given(reactiveRedisTemplateMock.scan(any())).willReturn(Flux.fromIterable(keys))
+
+        // test
+        StepVerifier.create(reactiveRedisTemplateTestInstance.scanKeysInKeyspace())
+            .expectNextSequence(keys)
+            .verifyComplete()
+
+        // assertions
+        verify(reactiveRedisTemplateMock, times(1))
+            .scan(
+                assertArg {
+                    assertEquals("$keyspace:*", it.pattern)
+                })
+    }
+
+    @Test
     fun `Should return all values in keyspace`() {
         // pre-requisites
         val keys = listOf("key1", "key2")

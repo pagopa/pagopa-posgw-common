@@ -1,11 +1,11 @@
 package it.pagopa.posgw.common.repositories.redis
 
 import java.time.Duration
-import java.util.*
 import org.springframework.data.redis.connection.stream.ObjectRecord
 import org.springframework.data.redis.connection.stream.ReadOffset
 import org.springframework.data.redis.connection.stream.RecordId
 import org.springframework.data.redis.core.ReactiveRedisTemplate
+import org.springframework.data.redis.core.ScanOptions
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
@@ -40,9 +40,6 @@ protected constructor(
      * @param ttl time to live for keys
      */
     init {
-        Objects.requireNonNull(reactiveRedisTemplate, "ReactiveRedisTemplate null not valid")
-        Objects.requireNonNull(keyspace, "Keyspace null not valid")
-        Objects.requireNonNull(ttl, "TTL null not valid")
         this.reactiveRedisTemplate = reactiveRedisTemplate
         this.keyspace = keyspace
         this.defaultTTL = ttl
@@ -207,7 +204,7 @@ protected constructor(
      *
      * @param streamKey the stream key for which create the group
      * @param groupName the group name
-     * @return a [Mono] emitting `"OK"` if the operation succeeded
+     * @return a [Mono] emitting true if the operation succeeded
      */
     fun createGroup(streamKey: String, groupName: String): Mono<Boolean> {
         return reactiveRedisTemplate
@@ -222,7 +219,7 @@ protected constructor(
      * @param streamKey the stream key for which create the group
      * @param groupName the group name
      * @param readOffset the offset from which start the receiver group
-     * @return a [Mono] emitting `"OK"` if the operation succeeded
+     * @return a [Mono] emitting true if the operation succeeded
      */
     fun createGroup(streamKey: String, groupName: String, readOffset: ReadOffset): Mono<Boolean> {
         return reactiveRedisTemplate
@@ -251,7 +248,17 @@ protected constructor(
      * @return a [Flux] emitting all keys in the keyspace
      */
     fun keysInKeyspace(): Flux<String> {
-        return reactiveRedisTemplate.keys("$keyspace*")
+        return reactiveRedisTemplate.keys("$keyspace:*")
+    }
+
+    /**
+     * Get all the keys in keyspace performing a scan operation. This is more efficient than
+     * keysInKeyspace() for large keyspaces
+     *
+     * @return a [Flux] emitting all keys in the keyspace
+     */
+    fun scanKeysInKeyspace(): Flux<String> {
+        return reactiveRedisTemplate.scan(ScanOptions.scanOptions().match("$keyspace:*").build())
     }
 
     val allValuesInKeySpace: Flux<V>
