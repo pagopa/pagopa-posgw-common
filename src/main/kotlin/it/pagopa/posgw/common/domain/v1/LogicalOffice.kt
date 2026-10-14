@@ -7,6 +7,4 @@ import it.pagopa.posgw.common.annotation.ValueObject
  *
  * @param value Logical office identifier.
  */
-@ValueObject
-@JvmInline
-value class LogicalOffice(val value: String)
+@ValueObject @JvmInline value class LogicalOffice(val value: String)

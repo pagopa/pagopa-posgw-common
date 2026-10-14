@@ -31,12 +31,9 @@ data class CardInstrumentDetails(
     override val brand: CardType,
     override val last4Digits: String,
     override val bin: String,
-) : InstrumentDetails(
-    type = PaymentInstrumentType.CARD,
-    brand = brand,
-    last4Digits = last4Digits,
-    bin = bin
-)
+) :
+    InstrumentDetails(
+        type = PaymentInstrumentType.CARD, brand = brand, last4Digits = last4Digits, bin = bin)
 
 /**
  * Supported kinds of payment instruments.
