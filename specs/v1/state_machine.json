@@ -41,7 +41,7 @@ createMachine(
           POS_AUTHORIZATION_REQUESTED_EVENT: {
             target: "POS_AUTHORIZATION_REQUESTED",
           },
-          POS_AUTHORIZATION_REQUESTED_ERROR_EVENT_EVENT: {
+          POS_AUTHORIZATION_REQUESTED_ERROR_EVENT: {
             cond: "is_retryable",
             target: "POS_AUTHORIZATION_REQUESTED_ERROR",
           },
