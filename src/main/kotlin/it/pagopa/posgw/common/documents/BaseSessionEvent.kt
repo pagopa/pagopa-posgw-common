@@ -3,13 +3,12 @@ package it.pagopa.posgw.common.documents
 import it.pagopa.posgw.common.domain.v1.SessionId
 import java.time.Instant
 import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document(collection = "eventstore")
 abstract class BaseSessionEvent<T>(
     @Id val id: String,
-    @Indexed open val timestamp: Instant,
+    open val timestamp: Instant,
     open val sessionId: SessionId,
     open val eventCode: String,
     open val data: T
