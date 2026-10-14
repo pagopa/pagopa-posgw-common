@@ -1,6 +1,6 @@
 package it.pagopa.posgw.common.documents.v1.sessions
 
-import it.pagopa.posgw.common.documents.v1.sessions.data.TransactionActivetedData
+import it.pagopa.posgw.common.documents.v1.sessions.data.TransactionActivatedData
 import it.pagopa.posgw.common.domain.v1.DebtPosition
 import it.pagopa.posgw.common.domain.v1.Psp
 import it.pagopa.posgw.common.domain.v1.sessions.SessionStatus
@@ -18,5 +18,5 @@ open class SessionView(
     @Indexed val updatedAt: Instant,
     val pspList: List<Psp>,
     val debtPositions: List<DebtPosition>,
-    val transaction: TransactionActivetedData
+    val transaction: TransactionActivatedData
 )

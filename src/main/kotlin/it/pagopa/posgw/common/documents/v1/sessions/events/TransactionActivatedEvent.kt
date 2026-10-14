@@ -1,6 +1,6 @@
 package it.pagopa.posgw.common.documents.v1.sessions.events
 
-import it.pagopa.posgw.common.documents.v1.sessions.data.TransactionActivetedData
+import it.pagopa.posgw.common.documents.v1.sessions.data.TransactionActivatedData
 import it.pagopa.posgw.common.domain.v1.SessionId
 import it.pagopa.posgw.common.domain.v1.sessions.SessionEventCode
 import org.springframework.data.mongodb.core.mapping.Document
@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document(collection = "eventstore")
 data class TransactionActivatedEvent(
     override val sessionId: SessionId,
-    override val data: TransactionActivetedData
+    override val data: TransactionActivatedData
 ) :
-    SessionEvent<TransactionActivetedData>(
-        eventCode = SessionEventCode.TRANSACTION_ACTIVATED.code, data = data, sessionId = sessionId)
+    SessionEvent<TransactionActivatedData>(
+        eventCode = SessionEventCode.TRANSACTION_ACTIVATED, data = data, sessionId = sessionId)
