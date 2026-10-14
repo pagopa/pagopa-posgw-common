@@ -9,7 +9,7 @@ createMachine(
         on: {
           DEBT_POSITION_CREATED_EVENT: {
             target: "DEBT_POSITION_CREATED",
-            cond: "debp_position_to_create",
+            cond: "debt_position_to_create",
           },
           TRANSACTION_ACTIVATED_EVENT: {
             target: "TRANSACTION_ACTIVATED",
