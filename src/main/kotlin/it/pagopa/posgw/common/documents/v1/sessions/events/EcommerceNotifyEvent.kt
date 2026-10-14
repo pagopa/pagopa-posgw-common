@@ -9,6 +9,4 @@ data class EcommerceNotifyEvent(
     override val sessionId: SessionId,
 ) :
     SessionEvent<Unit>(
-        eventCode = SessionEventCode.ECOMMERCE_AUTHORIZATION_OUTCOME_NOTIFIED,
-        data = Unit,
-        sessionId = sessionId)
+        eventCode = SessionEventCode.ECOMMERCE_NOTIFIED_EVENT, data = Unit, sessionId = sessionId)

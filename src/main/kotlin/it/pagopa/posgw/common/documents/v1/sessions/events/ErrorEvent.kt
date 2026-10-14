@@ -7,4 +7,5 @@ import org.springframework.data.mongodb.core.mapping.Document
 
 @Document(collection = "eventstore")
 data class ErrorEvent(override val sessionId: SessionId, override val data: ErrorData) :
-    SessionEvent<ErrorData>(eventCode = SessionEventCode.ERROR, data = data, sessionId = sessionId)
+    SessionEvent<ErrorData>(
+        eventCode = SessionEventCode.ERROR_EVENT, data = data, sessionId = sessionId)
