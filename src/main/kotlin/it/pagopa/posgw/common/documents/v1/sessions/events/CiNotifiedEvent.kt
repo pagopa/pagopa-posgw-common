@@ -7,6 +7,6 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document(collection = "eventstore")
 data class CiNotifiedEvent(override val sessionId: SessionId) :
     SessionEvent<Unit>(
-        eventCode = SessionEventCode.CI_NOTIFIED,
+        eventCode = SessionEventCode.CI_AUTHORIZATION_OUTCOME_NOTIFIED,
         data = Unit,
         sessionId = sessionId)
