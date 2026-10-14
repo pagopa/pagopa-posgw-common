@@ -11,6 +11,6 @@ data class PosAuthorizationRequestEvent(
     override val data: PosAuthorizationRequestedData
 ) :
     SessionEvent<PosAuthorizationRequestedData>(
-        eventCode = SessionEventCode.POS_AUTHORIZATION_REQUESTED,
+        eventCode = SessionEventCode.POS_AUTHORIZATION_REQUESTED_EVENT,
         data = data,
         sessionId = sessionId)
