@@ -1,5 +1,6 @@
 package it.pagopa.posgw.common.domain.v1.sessions
 
+import it.pagopa.posgw.common.documents.v1.sessions.events.EcommerceNotifyEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
 import it.pagopa.posgw.common.domain.v1.SessionId
 import java.time.Instant
@@ -26,6 +27,7 @@ class SessionEcommerceNotifyError(
 
     override fun applyEvent(event: SessionEvent<*>): Session =
         when (event) {
+            is EcommerceNotifyEvent -> SessionEcommerceNotified(this)
             else -> this
         }
 }
