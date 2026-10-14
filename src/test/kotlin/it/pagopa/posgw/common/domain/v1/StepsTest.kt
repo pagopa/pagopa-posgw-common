@@ -8,14 +8,11 @@ class StepsTest {
     fun `maps process steps to their external values`() {
         assertEquals(
             listOf(
-                "INITIALAZING_SESSION",
+                "INITIALIZING_SESSION",
                 "CREATING_DEBT_POSITION",
                 "ACTIVATING_TRANSACTION",
                 "REQUESTING_AUTHORIZATION",
-                "RECEIVING_AUTH_OUTCOME",
-                "NOTIFYING_ECOMMERCE_AUTH_OUTCOME",
-                "NOTIFYING_CREDITOR_INSTITUTION_AUTH_OUTCOME",
-            ),
+                "RECEIVING_AUTH_OUTCOME"),
             Steps.entries.map { it.value },
         )
     }
