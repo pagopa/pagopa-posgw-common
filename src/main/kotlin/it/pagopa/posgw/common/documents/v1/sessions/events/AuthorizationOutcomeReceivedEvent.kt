@@ -11,6 +11,6 @@ data class AuthorizationOutcomeReceivedEvent(
     override val data: AuthorizationOutcomeReceivedData
 ) :
     SessionEvent<AuthorizationOutcomeReceivedData>(
-        eventCode = SessionEventCode.AUTHORIZATION_OUTCOME_RECEIVED,
+        eventCode = SessionEventCode.POS_AUTHORIZED,
         data = data,
         sessionId = sessionId)

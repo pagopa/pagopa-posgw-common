@@ -11,4 +11,4 @@ data class PosSessionInitializedEvent(
     override val data: PosSessionInitializedData
 ) :
     SessionEvent<PosSessionInitializedData>(
-        sessionId, SessionEventCode.POS_SESSION_INITIALIZED, data)
+        sessionId, SessionEventCode.INITIALIZED, data)
