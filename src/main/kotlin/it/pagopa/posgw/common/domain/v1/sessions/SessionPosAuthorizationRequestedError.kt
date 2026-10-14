@@ -19,7 +19,7 @@ class SessionPosAuthorizationRequestedError(
         session: BaseSession,
         event: PosAuthorizationRequestErrorEvent
     ) : this(
-        sessionId = SessionId(),
+        sessionId = session.sessionId,
         correlationId = session.correlationId,
         status = SessionStatus.ERROR, // TODO check if this status is correct
         createdAt = session.createdAt,
