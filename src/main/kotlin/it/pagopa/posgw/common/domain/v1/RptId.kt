@@ -1,5 +1,7 @@
 package it.pagopa.posgw.common.domain.v1
 
+import it.pagopa.posgw.common.annotation.ValueObject
+
 /**
  * An <abbr>RPT</abbr> id.
  *
@@ -9,7 +11,9 @@ package it.pagopa.posgw.common.domain.v1
  *
  * @param value RPT id value
  */
-data class RptId(val value: String) {
+@ValueObject
+@JvmInline
+value class RptId(val value: String) {
     init {
         require(RPT_ID_REGEX.matches(value)) {
             "Ill-formed RPT id: $value. Doesn't match format: ${RPT_ID_REGEX.pattern}"

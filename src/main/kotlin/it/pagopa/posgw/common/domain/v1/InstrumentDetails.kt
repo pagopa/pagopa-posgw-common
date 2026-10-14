@@ -1,5 +1,8 @@
 package it.pagopa.posgw.common.domain.v1
 
+import it.pagopa.posgw.common.annotation.ValueObject
+
+@ValueObject
 data class InstrumentDetails(
     val type: PaymentInstrumentType,
     val brand: CardType,
@@ -7,6 +10,7 @@ data class InstrumentDetails(
     val bin: String,
 )
 
+@ValueObject
 data class CardInstrumentDetails(
     val brand: CardType,
     val last4Digits: String,

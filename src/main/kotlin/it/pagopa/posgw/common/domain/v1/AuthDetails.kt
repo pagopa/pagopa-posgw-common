@@ -1,5 +1,7 @@
 package it.pagopa.posgw.common.domain.v1
 
+import it.pagopa.posgw.common.annotation.ValueObject
+
 /**
  * Data class representing the details of a POS authentication process.
  *
@@ -7,10 +9,11 @@ package it.pagopa.posgw.common.domain.v1
  * @property rrn The Retrieval Reference Number: unique bank transaction identifier.
  * @property authorizationCode The authorization code provided by POS.
  */
+@ValueObject
 data class AuthDetails(
-    var outcome: AuthOutcome,
-    var rrn: Rrn,
-    var authorizationCode: AuthorizationCode
+    val outcome: AuthOutcome,
+    val rrn: Rrn,
+    val authorizationCode: AuthorizationCode
 )
 
 /**

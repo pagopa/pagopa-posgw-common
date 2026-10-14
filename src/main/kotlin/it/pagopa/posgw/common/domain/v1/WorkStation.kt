@@ -1,3 +1,5 @@
 package it.pagopa.posgw.common.domain.v1
 
-data class WorkStation(val value: String)
+import it.pagopa.posgw.common.annotation.ValueObject
+
+@ValueObject @JvmInline value class WorkStation(val value: String)

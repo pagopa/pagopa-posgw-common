@@ -2,4 +2,4 @@ package it.pagopa.posgw.common.domain.v1
 
 import it.pagopa.posgw.common.annotation.ValueObject
 
-@ValueObject class ChannelId(val value: String)
+@ValueObject @JvmInline value class ChannelId(val value: String)
