@@ -12,8 +12,7 @@ class StepsTest {
                 "CREATING_DEBT_POSITION",
                 "ACTIVATING_TRANSACTION",
                 "REQUESTING_AUTHORIZATION",
-                "RECEIVING_AUTH_OUTCOME"
-            ),
+                "RECEIVING_AUTH_OUTCOME"),
             Steps.entries.map { it.value },
         )
     }
