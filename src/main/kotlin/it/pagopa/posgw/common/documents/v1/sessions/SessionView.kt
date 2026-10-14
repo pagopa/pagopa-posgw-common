@@ -6,7 +6,6 @@ import it.pagopa.posgw.common.domain.v1.Psp
 import it.pagopa.posgw.common.domain.v1.sessions.SessionStatus
 import java.time.Instant
 import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document("sessions")
