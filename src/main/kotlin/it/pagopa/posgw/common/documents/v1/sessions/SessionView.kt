@@ -14,8 +14,8 @@ open class SessionView(
     @Id open val id: String,
     open val correlationId: String,
     val status: SessionStatus,
-    @Indexed val createdAt: Instant,
-    @Indexed val updatedAt: Instant,
+    val createdAt: Instant,
+    val updatedAt: Instant,
     val pspList: List<Psp>,
     val debtPositions: List<DebtPosition>,
     val transaction: TransactionActivatedData
