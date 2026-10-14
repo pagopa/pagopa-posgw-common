@@ -1,0 +1,173 @@
+import { createMachine } from "xstate";
+
+createMachine(
+  {
+    id: "posGtw",
+    initial: "INITIALIZED",
+    states: {
+      INITIALIZED: {
+        on: {
+          DEBT_POSITION_CREATED_EVENT: {
+            target: "DEBT_POSITION_CREATED",
+            cond: "debp_position_to_create",
+          },
+          TRANSACTION_ACTIVATED_EVENT: {
+            target: "TRANSACTION_ACTIVATED",
+            cond: "not_debt_position_to_create",
+          },
+          EXPIRED_EVENT: {
+            target: "EXPIRED",
+          },
+          ERROR_EVENT: {
+            target: "ERROR",
+          },
+        },
+      },
+      DEBT_POSITION_CREATED: {
+        on: {
+          TRANSACTION_ACTIVATED_EVENT: {
+            target: "TRANSACTION_ACTIVATED",
+          },
+          EXPIRED_EVENT: {
+            target: "EXPIRED",
+          },
+          ERROR_EVENT: {
+            target: "ERROR",
+          },
+        },
+      },
+      TRANSACTION_ACTIVATED: {
+        on: {
+          POS_AUTHORIZATION_REQUESTED_EVENT_EVENT: {
+            target: "POS_AUTHORIZATION_REQUESTED",
+          },
+          POS_AUTHORIZATION_REQUESTED_ERROR_EVENT_EVENT: {
+            cond: "is_retryable",
+            target: "POS_AUTHORIZATION_REQUESTED_ERROR",
+          },
+          EXPIRED_EVENT: {
+            target: "EXPIRED",
+          },
+          ERROR_EVENT: {
+            cond: "not_retryable",
+            target: "ERROR",
+          },
+        },
+      },
+      POS_AUTHORIZATION_REQUESTED: {
+        on: {
+          AUTHORIZATION_OUTCOME_RECEIVED_EVENT: [
+            {
+              cond: "authorized",
+              target: "POS_AUTHORIZED",
+            },
+            {
+              cond: "unauthorized",
+              target: "POS_UNAUTHORIZED",
+            },
+          ],
+          EXPIRED_EVENT: {
+            target: "EXPIRED",
+          },
+          ERROR_EVENT: {
+            target: "ERROR",
+          },
+        },
+      },
+      POS_AUTHORIZATION_REQUESTED_ERROR: {
+        on: {
+          POS_AUTHORIZATION_REQUESTED_EVENT: {
+            target: "POS_AUTHORIZATION_REQUESTED",
+          },
+          POS_AUTHORIZATION_REQUESTED_ERROR_EVENT: {
+            cond: "is_retryable",
+            target: "POS_AUTHORIZATION_REQUESTED_ERROR",
+          },
+          EXPIRED_EVENT: {
+            target: "EXPIRED",
+          },
+          ERROR_EVENT: {
+            cond: "not_retryable",
+            target: "ERROR",
+          },
+        },
+      },
+      POS_AUTHORIZED: {
+        on: {
+          CI_NOTIFIED_EVENT: {
+            target: "CI_NOTIFIED",
+          },
+          CI_NOTIFY_ERROR_EVENT: {
+            target: "CI_NOTIFY_ERROR",
+          },
+        },
+      },
+      POS_UNAUTHORIZED: {
+        on: {
+          CI_NOTIFIED_EVENT: {
+            target: "CI_NOTIFIED",
+          },
+          CI_NOTIFY_ERROR_EVENT: {
+            target: "CI_NOTIFY_ERROR",
+          },
+        },
+      },
+      CI_NOTIFY_ERROR: {
+        on: {
+          CI_NOTIFY_ERROR_EVENT: {
+            cond: "is_retryable",
+            target: "CI_NOTIFY_ERROR",
+          },
+          CI_NOTIFIED_EVENT: {
+            target: "CI_NOTIFIED",
+          },
+        },
+      },
+      CI_NOTIFIED: {
+        on: {
+          ECOMMERCE_NOTIFIED_EVENT: {
+            target: "ECOMMERCE_NOTIFIED",
+          },
+          ECOMMERCE_NOTIFY_ERROR_EVENT: {
+            target: "ECOMMERCE_NOTIFY_ERROR",
+          },
+        },
+      },
+      ECOMMERCE_NOTIFY_ERROR: {
+        on: {
+          ECOMMERCE_NOTIFY_ERROR_EVENT: {
+            target: "ECOMMERCE_NOTIFY_ERROR",
+          },
+          ECOMMERCE_NOTIFIED_EVENT: {
+            target: "ECOMMERCE_NOTIFIED",
+          },
+        },
+      },
+      ECOMMERCE_NOTIFIED: {
+        type: "final",
+      },
+      ERROR: {
+        type: "final",
+      },
+      EXPIRED: {
+        type: "final",
+      },
+    },
+    context: {
+      at_least_one_debt_position_to_create: false,
+      authorization_outcome: "OK",
+      is_retryable: true,
+    },
+  },
+  {
+    guards: {
+      debt_position_to_create: (context, event) =>
+        context.at_least_one_debt_position_to_create == true,
+      not_debt_position_to_create: (context, event) => !debt_position_to_create,
+      authorized: (context, event) => context.authorization_outcome == "OK",
+      unauthorized: (context, event) => !authorized,
+      is_retryable: (context, event) => context.is_retryable == true,
+      not_retryable: (context, event) => !is_retryable,
+    },
+  }
+);
