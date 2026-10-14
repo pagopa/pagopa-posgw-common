@@ -1,3 +1,10 @@
 package it.pagopa.posgw.common.domain.v1
 
-data class WorkStation(val value: String)
+import it.pagopa.posgw.common.annotation.ValueObject
+
+/**
+ * Identifies a workstation.
+ *
+ * @param value Workstation identifier.
+ */
+@ValueObject @JvmInline value class WorkStation(val value: String)
