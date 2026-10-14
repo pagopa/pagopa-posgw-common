@@ -15,7 +15,7 @@ createMachine(
             target: "TRANSACTION_ACTIVATED",
             cond: "not_debt_position_to_create",
           },
-          EXPIRED_EVENT: {
+          EXPIRE_EVENT: {
             target: "EXPIRED",
           },
           ERROR_EVENT: {
