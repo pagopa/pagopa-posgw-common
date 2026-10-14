@@ -50,7 +50,7 @@ enum class SessionEventCode(val code: String) {
     /*
      *  Authorization outcome notified to the eCommerce
      */
-    ECOMMERCE_AUTHORIZATION_OUTCOME_NOTIFY_ERROR("ECOMMERCE_AUTHORIZATION_OUTCOME_NOTIFIED"),
+    ECOMMERCE_AUTHORIZATION_OUTCOME_NOTIFY_ERROR("ECOMMERCE_AUTHORIZATION_OUTCOME_NOTIFY_ERROR"),
 
     /*
      *  Error occurred
