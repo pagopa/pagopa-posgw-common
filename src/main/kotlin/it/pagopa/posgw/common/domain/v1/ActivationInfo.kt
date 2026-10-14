@@ -2,13 +2,13 @@ package it.pagopa.posgw.common.domain.v1
 
 data class ActivationInfo(
     val paymentInstrumentType: PaymentInstrumentType,
-    val rtpId: RtpId,
+    val rptId: RptId,
     val amount: Long,
-    val outcome: OutcomeAction,
+    val outcome: Outcome,
     val reason: String
 )
 
-enum class OutcomeAction(val value: String) {
+enum class Outcome(val value: String) {
     OK("OK"),
     KO("KO")
 }
