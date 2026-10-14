@@ -5,7 +5,7 @@ enum class SessionEventCode(val code: String) {
     /*
      *  Payment session initialized and list of POS terminal retrieved
      */
-    INITIALIZED("INITIALIZED"),
+    POS_SESSION_INITIALIZED("POS_SESSION_INITIALIZED"),
 
     /*
      *  Debt position created
@@ -30,27 +30,27 @@ enum class SessionEventCode(val code: String) {
     /*
      *  Authorization outcome received from the PSP POS layer
      */
-    POS_AUTHORIZED("POS_AUTHORIZED"),
+    AUTHORIZATION_OUTCOME_RECEIVED("AUTHORIZATION_OUTCOME_RECEIVED"),
 
     /*
      *  Authorization outcome notified to the CI
      */
-    CI_NOTIFIED("CI_NOTIFIED"),
+    CI_AUTHORIZATION_OUTCOME_NOTIFIED("CI_AUTHORIZATION_OUTCOME_NOTIFIED"),
 
     /*
      *  Error occurred during the authorization outcome notification to the CI
      */
-    CI_NOTIFY_ERROR("CI_NOTIFY_ERROR"),
+    CI_AUTHORIZATION_OUTCOME_NOTIFY_ERROR("CI_AUTHORIZATION_OUTCOME_NOTIFY_ERROR"),
 
     /*
      *  Authorization outcome notified to the eCommerce
      */
-    ECOMMERCE_NOTIFIED("ECOMMERCE_NOTIFIED"),
+    ECOMMERCE_AUTHORIZATION_OUTCOME_NOTIFIED("ECOMMERCE_AUTHORIZATION_OUTCOME_NOTIFIED"),
 
     /*
      *  Authorization outcome notified to the eCommerce
      */
-    ECOMMERCE_NOTIFY_ERROR("ECOMMERCE_NOTIFY_ERROR"),
+    ECOMMERCE_AUTHORIZATION_OUTCOME_NOTIFY_ERROR("ECOMMERCE_AUTHORIZATION_OUTCOME_NOTIFY_ERROR"),
 
     /*
      *  Error occurred
