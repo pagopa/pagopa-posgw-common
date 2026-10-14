@@ -11,4 +11,4 @@ data class DeptPositionCreatedEvent(
     override val data: DebtPositionCreatedData
 ) :
     SessionEvent<DebtPositionCreatedData>(
-        sessionId = sessionId, eventCode = SessionEventCode.DEBT_POSITION_CREATED.code, data = data)
+        sessionId = sessionId, eventCode = SessionEventCode.DEBT_POSITION_CREATED, data = data)

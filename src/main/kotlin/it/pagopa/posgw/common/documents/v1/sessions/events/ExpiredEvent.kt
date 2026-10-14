@@ -8,4 +8,4 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document(collection = "eventstore")
 data class ExpiredEvent(override val sessionId: SessionId, override val data: ExpiredData) :
     SessionEvent<ExpiredData>(
-        eventCode = SessionEventCode.EXPIRED.code, data = data, sessionId = sessionId)
+        eventCode = SessionEventCode.EXPIRED, data = data, sessionId = sessionId)
