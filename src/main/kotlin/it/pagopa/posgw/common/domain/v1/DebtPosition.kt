@@ -1,12 +1,10 @@
 package it.pagopa.posgw.common.domain.v1
 
-data class DebtPosition(
-
-    // The unique identifier of the debt position
-    var iupd: Iupd,
-    // Unique identifier of the debt position: concatenation of fiscal code and notice code:
-    // <fiscalCode><noticeCode>
-    var rtpId: RtpId,
-    // Fiscal code of the debtor: must be obfuscated
-    var debtorFiscalCode: DebtorFiscalCode
-)
+/**
+ * Payment obligation identified by its IUPD and associated RPT identifier.
+ *
+ * @property iupd Unique identifier of the debt position.
+ * @property rptId Identifier formed from the creditor institution's fiscal code and notice code.
+ * @property debtorFiscalCode Obfuscated fiscal code of the debtor.
+ */
+data class DebtPosition(val iupd: Iupd, val rptId: RptId, val debtorFiscalCode: DebtorFiscalCode)
