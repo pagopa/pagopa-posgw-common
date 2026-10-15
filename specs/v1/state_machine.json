@@ -67,7 +67,7 @@ createMachine(
             target: "AUTHORIZATION_COMPLETED",
           },
           EXPIRED_EVENT: {
-            target: "EXPIRED",
+            target: "EXPIRED_WITH_AUTH_REQUESTED",
           },
         },
       },
@@ -121,6 +121,9 @@ createMachine(
           CI_NOTIFY_ERROR_EVENT: {
             target: "CI_NOTIFY_EXPIRED",
           },
+          EXPIRED_EVENT: {
+            target: "EXPIRED_WITH_AUTH_REQUESTED",
+          },
         },
       },
       CI_NOTIFIED: {
@@ -132,6 +135,9 @@ createMachine(
             target: "ECOMMERCE_NOTIFY_ERROR",
           },
         },
+      },
+      RECONCILIATED: {
+        type: "final",
       },
       ECOMMERCE_NOTIFY_ERROR: {
         on: {
@@ -162,6 +168,13 @@ createMachine(
       ERROR: {
         type: "final",
       },
+      EXPIRED_WITH_AUTH_REQUESTED: {
+        on: {
+          RECONCILIATED_EVENT: {
+            target: "RECONCILIATED",
+          },
+        },
+      },
       EXPIRED: {
         type: "final",
       },
@@ -177,8 +190,6 @@ createMachine(
       debt_position_to_create: (context, event) =>
         context.at_least_one_debt_position_to_create == true,
       not_debt_position_to_create: (context, event) => !debt_position_to_create,
-      authorized: (context, event) => context.authorization_outcome == "OK",
-      unauthorized: (context, event) => !authorized,
       is_retryable: (context, event) => context.is_retryable == true,
       not_retryable: (context, event) => !is_retryable,
     },
