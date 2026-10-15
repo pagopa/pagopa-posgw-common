@@ -7,171 +7,171 @@ createMachine(
     states: {
       EMPTY: {
         on: {
-          SESSION_INITIALIZED_EVENT: {
+          SESSION_INITIALIZED_EVT: {
             target: "INITIALIZED",
           },
         },
       },
       INITIALIZED: {
         on: {
-          DEBT_POSITION_CREATED_EVENT: {
+          DEBT_POSITION_CREATED_EVT: {
             target: "DEBT_POSITION_CREATED",
             cond: "debt_position_to_create",
           },
-          TRANSACTION_ACTIVATED_EVENT: {
+          TRANSACTION_ACTIVATED_EVT: {
             target: "TRANSACTION_ACTIVATED",
             cond: "not_debt_position_to_create",
           },
-          EXPIRED_EVENT: {
+          EXPIRED_EVT: {
             target: "EXPIRED",
           },
-          ERROR_EVENT: {
+          ERROR_EVT: {
             target: "ERROR",
           },
         },
       },
       DEBT_POSITION_CREATED: {
         on: {
-          TRANSACTION_ACTIVATED_EVENT: {
+          TRANSACTION_ACTIVATED_EVT: {
             target: "TRANSACTION_ACTIVATED",
           },
-          EXPIRED_EVENT: {
+          EXPIRED_EVT: {
             target: "EXPIRED",
           },
-          ERROR_EVENT: {
+          ERROR_EVT: {
             target: "ERROR",
           },
         },
       },
       TRANSACTION_ACTIVATED: {
         on: {
-          AUTHORIZATION_REQUESTED_EVENT: {
-            target: "AUTHORIZATION_REQUESTED",
+          AUTH_REQUESTED_EVT: {
+            target: "AUTH_REQUESTED",
           },
-          AUTHORIZATION_REQUESTED_ERROR_EVENT: {
+          AUTH_REQUEST_ERROR_EVT: {
             cond: "is_retryable",
-            target: "AUTHORIZATION_REQUESTED_ERROR",
+            target: "AUTH_REQUEST_ERROR",
           },
-          EXPIRED_EVENT: {
+          EXPIRED_EVT: {
             target: "EXPIRED",
           },
-          ERROR_EVENT: {
+          ERROR_EVT: {
             cond: "not_retryable",
             target: "ERROR",
           },
         },
       },
-      AUTHORIZATION_REQUESTED: {
+      AUTH_REQUESTED: {
         on: {
-          AUTHORIZATION_OUTCOME_RECEIVED_EVENT: {
-            target: "AUTHORIZATION_COMPLETED",
+          AUTH_OUTCOME_RECEIVED_EVT: {
+            target: "AUTH_COMPLETED",
           },
-          EXPIRED_EVENT: {
-            target: "EXPIRED_WITH_AUTH_REQUESTED",
+          EXPIRED_EVT: {
+            target: "EXPIRED_TO_RECONCILE",
           },
         },
       },
-      AUTHORIZATION_REQUESTED_ERROR: {
+      AUTH_REQUEST_ERROR: {
         on: {
-          AUTHORIZATION_REQUESTED_EVENT: {
-            target: "AUTHORIZATION_REQUESTED",
+          AUTH_REQUESTED_EVT: {
+            target: "AUTH_REQUESTED",
           },
-          AUTHORIZATION_REQUESTED_ERROR_EVENT: {
+          AUTH_REQUEST_RETRIED_EVT: {
             cond: "is_retryable",
-            target: "AUTHORIZATION_REQUESTED_ERROR",
+            target: "AUTH_REQUEST_ERROR",
           },
-          EXPIRED_EVENT: {
-            target: "EXPIRED",
+          EXPIRED_EVT: {
+            target: "EXPIRED_TO_RECONCILE",
           },
-          ERROR_EVENT: {
+          ERROR_EVT: {
             cond: "not_retryable",
             target: "ERROR",
           },
         },
       },
-      AUTHORIZATION_COMPLETED: {
+      AUTH_COMPLETED: {
         on: {
-          CI_NOTIFIED_EVENT: {
+          CI_NOTIFIED_EVT: {
             target: "CI_NOTIFIED",
           },
-          CI_NOTIFY_ERROR_EVENT: {
-            target: "CI_NOTIFY_ERROR",
+          CI_NTF_ERROR_EVT: {
+            target: "CI_NTF_ERROR",
           },
         },
       },
-      CI_NOTIFY_ERROR: {
+      CI_NTF_ERROR: {
         on: {
-          CI_NOTIFY_ERROR_EVENT: {
+          CI_NTF_RETRIED_EVT: {
             cond: "is_retryable",
-            target: "CI_NOTIFY_ERROR",
+            target: "CI_NTF_ERROR",
           },
-          CI_NOTIFIED_EVENT: {
+          CI_NOTIFIED_EVT: {
             target: "CI_NOTIFIED",
           },
-          CI_NOTIFY_EXPIRED_EVENT: {
-            target: "CI_NOTIFY_EXPIRED",
+          CI_NTF_EXPIRED_EVT: {
+            target: "CI_NTF_EXPIRED",
           },
         },
       },
-      CI_NOTIFY_EXPIRED: {
+      CI_NTF_EXPIRED: {
         on: {
-          CI_NOTIFIED_EVENT: {
+          CI_NOTIFIED_EVT: {
             target: "CI_NOTIFIED",
           },
-          CI_NOTIFY_ERROR_EVENT: {
-            target: "CI_NOTIFY_EXPIRED",
+          CI_NTF_RETRIED_EVT: {
+            target: "CI_NTF_EXPIRED",
           },
-          EXPIRED_EVENT: {
-            target: "EXPIRED_WITH_AUTH_REQUESTED",
+          EXPIRED_EVT: {
+            target: "EXPIRED_TO_RECONCILE",
           },
         },
       },
       CI_NOTIFIED: {
         on: {
-          ECOMMERCE_NOTIFIED_EVENT: {
-            target: "ECOMMERCE_NOTIFIED",
+          ECOMM_NOTIFIED_EVT: {
+            target: "ECOMM_NOTIFIED",
           },
-          ECOMMERCE_NOTIFY_ERROR_EVENT: {
-            target: "ECOMMERCE_NOTIFY_ERROR",
+          ECOMM_NTF_ERROR_EVT: {
+            target: "ECOMM_NTF_ERROR",
           },
         },
       },
-      RECONCILIATED: {
+      RECONCILED: {
         type: "final",
       },
-      ECOMMERCE_NOTIFY_ERROR: {
+      ECOMM_NTF_ERROR: {
         on: {
-          ECOMMERCE_NOTIFY_ERROR_EVENT: {
-            target: "ECOMMERCE_NOTIFY_ERROR",
+          ECOMM_NTF_RETRIED_EVT: {
+            target: "ECOMM_NTF_ERROR",
           },
-          ECOMMERCE_NOTIFIED_EVENT: {
-            target: "ECOMMERCE_NOTIFIED",
+          ECOMM_NOTIFIED_EVT: {
+            target: "ECOMM_NOTIFIED",
           },
-          ECOMMERCE_NOTIFY_EXPIRED_EVENT: {
-            target: "ECOMMERCE_NOTIFY_EXPIRED",
+          ECOMM_NTF_EXPIRED_EVT: {
+            target: "ECOMM_NTF_EXPIRED",
           },
         },
       },
-      ECOMMERCE_NOTIFY_EXPIRED: {
+      ECOMM_NTF_EXPIRED: {
         on: {
-          ECOMMERCE_NOTIFIED_EVENT: {
-            target: "ECOMMERCE_NOTIFIED",
+          ECOMM_NOTIFIED_EVT: {
+            target: "ECOMM_NOTIFIED",
           },
-          ECOMMERCE_NOTIFY_ERROR_EVENT: {
-            target: "ECOMMERCE_NOTIFY_EXPIRED",
+          ECOMM_NTF_RETRIED_EVT: {
+            target: "ECOMM_NTF_EXPIRED",
           },
         },
       },
-      ECOMMERCE_NOTIFIED: {
+      ECOMM_NOTIFIED: {
         type: "final",
       },
       ERROR: {
         type: "final",
       },
-      EXPIRED_WITH_AUTH_REQUESTED: {
+      EXPIRED_TO_RECONCILE: {
         on: {
-          RECONCILIATED_EVENT: {
-            target: "RECONCILIATED",
+          RECONCILED_EVT: {
+            target: "RECONCILED",
           },
         },
       },
