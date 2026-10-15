@@ -56,16 +56,10 @@ createMachine(
       },
       POS_AUTHORIZATION_REQUESTED: {
         on: {
-          AUTHORIZATION_OUTCOME_RECEIVED_EVENT: [
-            {
-              cond: "authorized",
-              target: "POS_AUTHORIZED",
-            },
-            {
-              cond: "unauthorized",
-              target: "POS_UNAUTHORIZED",
-            },
-          ],
+          AUTHORIZATION_OUTCOME_RECEIVED_EVENT:
+          {
+            target: "POS_AUTHORIZATION_COMPLETED",
+          },
           EXPIRED_EVENT: {
             target: "EXPIRED",
           },
@@ -92,17 +86,7 @@ createMachine(
           },
         },
       },
-      POS_AUTHORIZED: {
-        on: {
-          CI_NOTIFIED_EVENT: {
-            target: "CI_NOTIFIED",
-          },
-          CI_NOTIFY_ERROR_EVENT: {
-            target: "CI_NOTIFY_ERROR",
-          },
-        },
-      },
-      POS_UNAUTHORIZED: {
+      POS_AUTHORIZATION_COMPLETED: {
         on: {
           CI_NOTIFIED_EVENT: {
             target: "CI_NOTIFIED",
