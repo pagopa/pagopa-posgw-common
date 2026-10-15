@@ -3,8 +3,15 @@ import { createMachine } from "xstate";
 createMachine(
   {
     id: "POS Gateway",
-    initial: "INITIALIZED",
+    initial: "EMPTY",
     states: {
+      EMPTY: {
+        on: {
+          SESSION_INITIALIZED_EVENT: {
+            target: "INITIALIZED",
+          },
+        },
+      },
       INITIALIZED: {
         on: {
           DEBT_POSITION_CREATED_EVENT: {
@@ -15,7 +22,7 @@ createMachine(
             target: "TRANSACTION_ACTIVATED",
             cond: "not_debt_position_to_create",
           },
-          EXPIRE_EVENT: {
+          EXPIRED_EVENT: {
             target: "EXPIRED",
           },
           ERROR_EVENT: {
@@ -38,12 +45,12 @@ createMachine(
       },
       TRANSACTION_ACTIVATED: {
         on: {
-          POS_AUTHORIZATION_REQUESTED_EVENT: {
-            target: "POS_AUTHORIZATION_REQUESTED",
+          AUTHORIZATION_REQUESTED_EVENT: {
+            target: "AUTHORIZATION_REQUESTED",
           },
-          POS_AUTHORIZATION_REQUESTED_ERROR_EVENT: {
+          AUTHORIZATION_REQUESTED_ERROR_EVENT: {
             cond: "is_retryable",
-            target: "POS_AUTHORIZATION_REQUESTED_ERROR",
+            target: "AUTHORIZATION_REQUESTED_ERROR",
           },
           EXPIRED_EVENT: {
             target: "EXPIRED",
@@ -54,28 +61,24 @@ createMachine(
           },
         },
       },
-      POS_AUTHORIZATION_REQUESTED: {
+      AUTHORIZATION_REQUESTED: {
         on: {
-          AUTHORIZATION_OUTCOME_RECEIVED_EVENT:
-          {
-            target: "POS_AUTHORIZATION_COMPLETED",
+          AUTHORIZATION_OUTCOME_RECEIVED_EVENT: {
+            target: "AUTHORIZATION_COMPLETED",
           },
           EXPIRED_EVENT: {
             target: "EXPIRED",
           },
-          ERROR_EVENT: {
-            target: "ERROR",
-          },
         },
       },
-      POS_AUTHORIZATION_REQUESTED_ERROR: {
+      AUTHORIZATION_REQUESTED_ERROR: {
         on: {
-          POS_AUTHORIZATION_REQUESTED_EVENT: {
-            target: "POS_AUTHORIZATION_REQUESTED",
+          AUTHORIZATION_REQUESTED_EVENT: {
+            target: "AUTHORIZATION_REQUESTED",
           },
-          POS_AUTHORIZATION_REQUESTED_ERROR_EVENT: {
+          AUTHORIZATION_REQUESTED_ERROR_EVENT: {
             cond: "is_retryable",
-            target: "POS_AUTHORIZATION_REQUESTED_ERROR",
+            target: "AUTHORIZATION_REQUESTED_ERROR",
           },
           EXPIRED_EVENT: {
             target: "EXPIRED",
@@ -86,7 +89,7 @@ createMachine(
           },
         },
       },
-      POS_AUTHORIZATION_COMPLETED: {
+      AUTHORIZATION_COMPLETED: {
         on: {
           CI_NOTIFIED_EVENT: {
             target: "CI_NOTIFIED",
@@ -104,6 +107,19 @@ createMachine(
           },
           CI_NOTIFIED_EVENT: {
             target: "CI_NOTIFIED",
+          },
+          CI_NOTIFY_EXPIRED_EVENT: {
+            target: "CI_NOTIFY_EXPIRED",
+          },
+        },
+      },
+      CI_NOTIFY_EXPIRED: {
+        on: {
+          CI_NOTIFIED_EVENT: {
+            target: "CI_NOTIFIED",
+          },
+          CI_NOTIFY_ERROR_EVENT: {
+            target: "CI_NOTIFY_EXPIRED",
           },
         },
       },
@@ -124,6 +140,19 @@ createMachine(
           },
           ECOMMERCE_NOTIFIED_EVENT: {
             target: "ECOMMERCE_NOTIFIED",
+          },
+          ECOMMERCE_NOTIFY_EXPIRED_EVENT: {
+            target: "ECOMMERCE_NOTIFY_EXPIRED",
+          },
+        },
+      },
+      ECOMMERCE_NOTIFY_EXPIRED: {
+        on: {
+          ECOMMERCE_NOTIFIED_EVENT: {
+            target: "ECOMMERCE_NOTIFIED",
+          },
+          ECOMMERCE_NOTIFY_ERROR_EVENT: {
+            target: "ECOMMERCE_NOTIFY_EXPIRED",
           },
         },
       },
@@ -153,5 +182,5 @@ createMachine(
       is_retryable: (context, event) => context.is_retryable == true,
       not_retryable: (context, event) => !is_retryable,
     },
-  }
+  },
 );
