@@ -4,7 +4,7 @@ import java.time.Instant
 
 abstract class BaseSessionWithEcommNtfExpired(
     val sessionWithEcommNtfError: BaseSessionWithEcommNtfError,
-    override val updatedAt: Instant
+    updatedAt: Instant
 ) :
     BaseSessionWithEcommNtfError(
         sessionWithCiNotified = sessionWithEcommNtfError.sessionWithCiNotified,

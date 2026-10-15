@@ -5,7 +5,7 @@ import java.time.Instant
 abstract class BaseSessionWithEcommNtfError(
     val sessionWithCiNotified: BaseSessionWithCiNotified,
     // todo add specific data
-    override val updatedAt: Instant
+    updatedAt: Instant
 ) :
     BaseSessionWithCiNotified(
         sessionWithAuthComp = sessionWithCiNotified.sessionWithAuthComp, updatedAt = updatedAt)

@@ -5,7 +5,7 @@ import java.time.Instant
 abstract class BaseSessionCiNtfExpired(
     val sessionWithCiNtfError: BaseSessionWithCiNtfError,
     // todo add specific data
-    override val updatedAt: Instant
+    updatedAt: Instant
 ) :
     BaseSessionWithCiNtfError(
         sessionWithAuthComp = sessionWithCiNtfError.sessionWithAuthComp, updatedAt = updatedAt) {}

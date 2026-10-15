@@ -5,10 +5,10 @@ import it.pagopa.posgw.common.domain.v1.sessions.SessionStatus
 import java.time.Instant
 
 abstract class BaseSession(
-    open val sessionId: SessionId,
-    open val correlationId: String,
-    open val createdAt: Instant,
-    open val updatedAt: Instant,
+    val sessionId: SessionId,
+    val correlationId: String,
+    val createdAt: Instant,
+    val updatedAt: Instant,
 ) {
     abstract val status: SessionStatus
 }

@@ -4,9 +4,9 @@ import it.pagopa.posgw.common.documents.v1.sessions.data.ErrorData
 import java.time.Instant
 
 abstract class BaseSessionError(
-    sessionInitialized: BaseSessionInitialized,
-    errorData: ErrorData,
-    override val updatedAt: Instant
+    val sessionInitialized: BaseSessionInitialized,
+    val errorData: ErrorData,
+    updatedAt: Instant
 ) :
     BaseSessionInitialized(
         sessionId = sessionInitialized.sessionId,

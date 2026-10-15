@@ -5,11 +5,11 @@ import it.pagopa.posgw.common.domain.v1.SessionId
 import java.time.Instant
 
 abstract class BaseSessionInitialized(
-    open val initializeData: PosSessionInitializedData,
-    override val sessionId: SessionId,
-    override val createdAt: Instant,
-    override val correlationId: String,
-    override val updatedAt: Instant,
+    val initializeData: PosSessionInitializedData,
+    sessionId: SessionId,
+    createdAt: Instant,
+    correlationId: String,
+    updatedAt: Instant,
 ) :
     BaseSession(
         sessionId = sessionId,

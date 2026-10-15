@@ -3,7 +3,7 @@ package it.pagopa.posgw.common.domain.v1.sessions.pojos
 abstract class BaseSessionWithCiNtfError(
     val sessionWithAuthComp: BaseSessionWithAuthComp,
     // todo add specific data
-    override val updatedAt: java.time.Instant
+    updatedAt: java.time.Instant
 ) :
     BaseSessionWithAuthComp(
         sessionWithAuthReq = sessionWithAuthComp.sessionWithAuthReq,

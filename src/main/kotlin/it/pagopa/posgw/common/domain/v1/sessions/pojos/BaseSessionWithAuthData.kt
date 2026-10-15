@@ -6,7 +6,7 @@ import java.time.Instant
 abstract class BaseSessionWithAuthComp(
     val sessionWithAuthReq: BaseSessionWithAuthReq,
     val authorizationData: AuthorizationOutcomeReceivedData,
-    override val updatedAt: Instant
+    updatedAt: Instant
 ) :
     BaseSessionWithAuthReq(
         sessionWithTransactionAct = sessionWithAuthReq.sessionWithTransactionAct,

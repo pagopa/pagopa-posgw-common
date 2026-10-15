@@ -6,9 +6,9 @@ import java.time.Instant
 abstract class BaseSessionWithAuthReq(
     val sessionWithTransactionAct: BaseSessionWithTransactionAct,
     val posAuthorizationRequestData: PosAuthorizationRequestedData,
-    override val updatedAt: Instant
+    updatedAt: Instant
 ) :
     BaseSessionWithTransactionAct(
-        sessionWithDebtPos = sessionWithTransactionAct,
+        sessionWithTransactionAct,
         transactionActivateData = sessionWithTransactionAct.transactionActivateData,
         updatedAt = updatedAt)

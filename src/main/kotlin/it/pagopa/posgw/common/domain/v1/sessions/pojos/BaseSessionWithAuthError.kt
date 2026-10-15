@@ -3,11 +3,11 @@ package it.pagopa.posgw.common.domain.v1.sessions.pojos
 import java.time.Instant
 
 abstract class BaseSessionWithAuthError(
-    sessionWithTransactionAct: BaseSessionWithTransactionAct,
+    val sessionWithTransactionAct: BaseSessionWithTransactionAct,
     // todo add specific data
-    override val updatedAt: Instant
+    updatedAt: Instant
 ) :
     BaseSessionWithTransactionAct(
-        sessionWithDebtPos = sessionWithTransactionAct,
+        sessionInitialized = sessionWithTransactionAct,
         transactionActivateData = sessionWithTransactionAct.transactionActivateData,
         updatedAt = updatedAt)

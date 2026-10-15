@@ -4,7 +4,7 @@ import java.time.Instant
 
 abstract class BaseSessionWithEcommNotified(
     val sessionWithCiNotified: BaseSessionWithCiNotified,
-    override val updatedAt: Instant
+    updatedAt: Instant
 ) :
     BaseSessionWithCiNotified(
         sessionWithAuthComp = sessionWithCiNotified.sessionWithAuthComp, updatedAt = updatedAt)

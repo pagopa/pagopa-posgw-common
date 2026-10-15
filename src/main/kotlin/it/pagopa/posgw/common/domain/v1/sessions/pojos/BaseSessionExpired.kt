@@ -5,7 +5,7 @@ import it.pagopa.posgw.common.documents.v1.sessions.data.ExpiredData
 abstract class BaseSessionExpired(
     val sessionInitialized: BaseSessionInitialized,
     val expiredData: ExpiredData,
-    override val updatedAt: java.time.Instant
+    updatedAt: java.time.Instant
 ) :
     BaseSessionInitialized(
         sessionId = sessionInitialized.sessionId,
