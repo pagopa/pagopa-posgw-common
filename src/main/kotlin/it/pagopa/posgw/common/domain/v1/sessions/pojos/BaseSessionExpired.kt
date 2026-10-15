@@ -8,4 +8,8 @@ abstract class BaseSessionExpired(
     override val updatedAt: java.time.Instant
 ) :
     BaseSessionInitialized(
-        session = sessionInitialized, data = sessionInitialized.data, updatedAt = updatedAt)
+        sessionId = sessionInitialized.sessionId,
+        initializeData = sessionInitialized.initializeData,
+        createdAt = sessionInitialized.createdAt,
+        correlationId = sessionInitialized.correlationId,
+        updatedAt = updatedAt)

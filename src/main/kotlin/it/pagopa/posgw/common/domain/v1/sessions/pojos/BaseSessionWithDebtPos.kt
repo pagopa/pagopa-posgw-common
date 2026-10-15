@@ -4,9 +4,13 @@ import it.pagopa.posgw.common.documents.v1.sessions.data.DebtPositionCreatedData
 import java.time.Instant
 
 abstract class BaseSessionWithDebtPos(
-    val sessionInitialized: BaseSessionInitialized,
-    val debtPositionData: DebtPositionCreatedData,
+    open val sessionInitialized: BaseSessionInitialized,
+    open val debtPositionData: DebtPositionCreatedData,
     override val updatedAt: Instant
 ) :
     BaseSessionInitialized(
-        session = sessionInitialized, data = sessionInitialized.data, updatedAt = updatedAt)
+        sessionId = sessionInitialized.sessionId,
+        initializeData = sessionInitialized.initializeData,
+        createdAt = sessionInitialized.createdAt,
+        correlationId = sessionInitialized.correlationId,
+        updatedAt = updatedAt)

@@ -1,16 +1,18 @@
 package it.pagopa.posgw.common.domain.v1.sessions.pojos
 
 import it.pagopa.posgw.common.documents.v1.sessions.data.PosSessionInitializedData
+import it.pagopa.posgw.common.domain.v1.SessionId
 import java.time.Instant
 
 abstract class BaseSessionInitialized(
-    val data: PosSessionInitializedData,
-    val session: BaseSession,
+    open val initializeData: PosSessionInitializedData,
+    override val sessionId: SessionId,
+    override val createdAt: Instant,
+    override val correlationId: String,
     override val updatedAt: Instant,
 ) :
     BaseSession(
-        sessionId = session.sessionId,
-        correlationId = session.correlationId,
-        status = session.status,
-        createdAt = session.createdAt,
+        sessionId = sessionId,
+        correlationId = correlationId,
+        createdAt = createdAt,
         updatedAt = updatedAt)

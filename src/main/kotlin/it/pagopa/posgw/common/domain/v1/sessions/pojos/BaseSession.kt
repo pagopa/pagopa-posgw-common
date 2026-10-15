@@ -7,7 +7,8 @@ import java.time.Instant
 abstract class BaseSession(
     open val sessionId: SessionId,
     open val correlationId: String,
-    open val status: SessionStatus,
     open val createdAt: Instant,
     open val updatedAt: Instant,
-)
+) {
+    abstract val status: SessionStatus
+}

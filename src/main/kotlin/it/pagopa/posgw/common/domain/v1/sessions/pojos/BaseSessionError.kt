@@ -9,4 +9,8 @@ abstract class BaseSessionError(
     override val updatedAt: Instant
 ) :
     BaseSessionInitialized(
-        session = sessionInitialized, data = sessionInitialized.data, updatedAt = updatedAt)
+        sessionId = sessionInitialized.sessionId,
+        initializeData = sessionInitialized.initializeData,
+        createdAt = sessionInitialized.createdAt,
+        correlationId = sessionInitialized.correlationId,
+        updatedAt = updatedAt)
