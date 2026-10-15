@@ -11,4 +11,6 @@ data class TransactionActivatedEvent(
     override val data: TransactionActivatedData
 ) :
     SessionEvent<TransactionActivatedData>(
-        eventCode = SessionEventCode.TRANSACTION_ACTIVATED, data = data, sessionId = sessionId)
+        eventCode = SessionEventCode.TRANSACTION_ACTIVATED_EVENT,
+        data = data,
+        sessionId = sessionId)

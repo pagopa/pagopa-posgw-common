@@ -9,6 +9,6 @@ data class PosAuthorizationRequestErrorEvent(
     override val sessionId: SessionId,
 ) :
     SessionEvent<Unit>(
-        eventCode = SessionEventCode.POS_AUTHORIZATION_REQUEST_ERROR,
+        eventCode = SessionEventCode.POS_AUTHORIZATION_REQUEST_ERROR_EVENT,
         data = Unit,
         sessionId = sessionId)
