@@ -6,7 +6,7 @@ import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
 class EmptySession : Session {
     override fun applyEvent(event: SessionEvent<*>): Session =
         when (event) {
-            is PosSessionInitializedEvent -> SessionPosInizialialized(event)
+            is PosSessionInitializedEvent -> Initialized(event)
             else -> this
         }
 }

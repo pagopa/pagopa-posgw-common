@@ -5,7 +5,4 @@ import java.time.Instant
 abstract class BaseSessionReconciled(
     sessionWithTransactionAct: BaseSessionWithTransactionAct,
     updatedAt: Instant
-) : BaseSessionExpiredToReconcile(
-    sessionWithTransactionAct,
-    updatedAt = updatedAt
-)
+) : BaseSessionExpiredToReconcile(sessionWithTransactionAct, updatedAt = updatedAt)
