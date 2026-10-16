@@ -1,6 +1,6 @@
 package it.pagopa.posgw.common.documents.v1.sessions.data
 
-import it.pagopa.posgw.common.domain.v1.Steps
-import java.time.Instant
+import it.pagopa.posgw.common.domain.v1.sessions.SessionStatus
 
-data class ExpiredData(val step: Steps, val timestamp: Instant)
+data class ExpiredData(val atStatus: SessionStatus)
+
