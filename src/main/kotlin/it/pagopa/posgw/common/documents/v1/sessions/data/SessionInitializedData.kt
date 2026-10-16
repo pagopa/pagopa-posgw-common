@@ -7,7 +7,7 @@ data class SessionInitializedData(
     val creditorInstitution: CreditorInstitution,
     val terminalIds: List<String>,
     val correlationId: String
-){
+) {
     data class CreditorInstitution(
         val fiscalCode: String,
         val logicalOffice: String,
