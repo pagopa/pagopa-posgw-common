@@ -1,0 +1,197 @@
+import { createMachine } from "xstate";
+
+createMachine(
+  {
+    id: "POS Gateway",
+    initial: "EMPTY",
+    states: {
+      EMPTY: {
+        on: {
+          SESSION_INITIALIZED_EVT: {
+            target: "INITIALIZED",
+          },
+        },
+      },
+      INITIALIZED: {
+        on: {
+          DEBT_POSITION_CREATED_EVT: {
+            target: "DEBT_POSITION_CREATED",
+            cond: "debt_position_to_create",
+          },
+          TRANSACTION_ACTIVATED_EVT: {
+            target: "TRANSACTION_ACTIVATED",
+            cond: "not_debt_position_to_create",
+          },
+          EXPIRED_EVT: {
+            target: "EXPIRED",
+          },
+          ERROR_EVT: {
+            target: "ERROR",
+          },
+        },
+      },
+      DEBT_POSITION_CREATED: {
+        on: {
+          TRANSACTION_ACTIVATED_EVT: {
+            target: "TRANSACTION_ACTIVATED",
+          },
+          EXPIRED_EVT: {
+            target: "EXPIRED",
+          },
+          ERROR_EVT: {
+            target: "ERROR",
+          },
+        },
+      },
+      TRANSACTION_ACTIVATED: {
+        on: {
+          AUTH_REQUESTED_EVT: {
+            target: "AUTH_REQUESTED",
+          },
+          AUTH_REQUEST_ERROR_EVT: {
+            cond: "is_retryable",
+            target: "AUTH_REQUEST_ERROR",
+          },
+          EXPIRED_EVT: {
+            target: "EXPIRED",
+          },
+          ERROR_EVT: {
+            cond: "not_retryable",
+            target: "ERROR",
+          },
+        },
+      },
+      AUTH_REQUESTED: {
+        on: {
+          AUTH_OUTCOME_RECEIVED_EVT: {
+            target: "AUTH_COMPLETED",
+          },
+          EXPIRED_EVT: {
+            target: "EXPIRED_TO_RECONCILE",
+          },
+        },
+      },
+      AUTH_REQUEST_ERROR: {
+        on: {
+          AUTH_REQUESTED_EVT: {
+            target: "AUTH_REQUESTED",
+          },
+          AUTH_REQUEST_RETRIED_EVT: {
+            cond: "is_retryable",
+            target: "AUTH_REQUEST_ERROR",
+          },
+          EXPIRED_EVT: {
+            target: "EXPIRED_TO_RECONCILE",
+          },
+          ERROR_EVT: {
+            cond: "not_retryable",
+            target: "ERROR",
+          },
+        },
+      },
+      AUTH_COMPLETED: {
+        on: {
+          CI_NOTIFIED_EVT: {
+            target: "CI_NOTIFIED",
+          },
+          CI_NTF_ERROR_EVT: {
+            target: "CI_NTF_ERROR",
+          },
+        },
+      },
+      CI_NTF_ERROR: {
+        on: {
+          CI_NTF_RETRIED_EVT: {
+            cond: "is_retryable",
+            target: "CI_NTF_ERROR",
+          },
+          CI_NOTIFIED_EVT: {
+            target: "CI_NOTIFIED",
+          },
+          CI_NTF_EXPIRED_EVT: {
+            target: "CI_NTF_EXPIRED",
+          },
+        },
+      },
+      CI_NTF_EXPIRED: {
+        on: {
+          CI_NOTIFIED_EVT: {
+            target: "CI_NOTIFIED",
+          },
+          CI_NTF_RETRIED_EVT: {
+            target: "CI_NTF_EXPIRED",
+          },
+          EXPIRED_EVT: {
+            target: "EXPIRED_TO_RECONCILE",
+          },
+        },
+      },
+      CI_NOTIFIED: {
+        on: {
+          ECOMM_NOTIFIED_EVT: {
+            target: "ECOMM_NOTIFIED",
+          },
+          ECOMM_NTF_ERROR_EVT: {
+            target: "ECOMM_NTF_ERROR",
+          },
+        },
+      },
+      RECONCILED: {
+        type: "final",
+      },
+      ECOMM_NTF_ERROR: {
+        on: {
+          ECOMM_NTF_RETRIED_EVT: {
+            target: "ECOMM_NTF_ERROR",
+          },
+          ECOMM_NOTIFIED_EVT: {
+            target: "ECOMM_NOTIFIED",
+          },
+          ECOMM_NTF_EXPIRED_EVT: {
+            target: "ECOMM_NTF_EXPIRED",
+          },
+        },
+      },
+      ECOMM_NTF_EXPIRED: {
+        on: {
+          ECOMM_NOTIFIED_EVT: {
+            target: "ECOMM_NOTIFIED",
+          },
+          ECOMM_NTF_RETRIED_EVT: {
+            target: "ECOMM_NTF_EXPIRED",
+          },
+        },
+      },
+      ECOMM_NOTIFIED: {
+        type: "final",
+      },
+      ERROR: {
+        type: "final",
+      },
+      EXPIRED_TO_RECONCILE: {
+        on: {
+          RECONCILED_EVT: {
+            target: "RECONCILED",
+          },
+        },
+      },
+      EXPIRED: {
+        type: "final",
+      },
+    },
+    context: {
+      at_least_one_debt_position_to_create: false,
+      authorization_outcome: "OK",
+      is_retryable: true,
+    },
+  },
+  {
+    guards: {
+      debt_position_to_create: (context, event) =>
+        context.at_least_one_debt_position_to_create == true,
+      not_debt_position_to_create: (context, event) => !debt_position_to_create,
+      is_retryable: (context, event) => context.is_retryable == true,
+      not_retryable: (context, event) => !is_retryable,
+    },
+  },
+);
