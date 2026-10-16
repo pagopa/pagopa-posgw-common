@@ -7,13 +7,14 @@ import it.pagopa.posgw.common.documents.v1.sessions.events.ExpiredEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.PosSessionInitializedEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.TransactionActivatedEvent
+import it.pagopa.posgw.common.domain.v1.CorrelationId
 import it.pagopa.posgw.common.domain.v1.SessionId
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionInitialized
 import java.time.Instant
 
 class Initialized(
     sessionId: SessionId,
-    correlationId: String,
+    correlationId: CorrelationId,
     createdAt: Instant,
     initializeData: PosSessionInitializedData
 ) :
