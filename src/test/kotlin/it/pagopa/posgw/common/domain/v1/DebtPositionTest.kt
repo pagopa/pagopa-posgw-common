@@ -11,11 +11,11 @@ class DebtPositionTest {
             DebtPosition(
                 iupd = Iupd("iupd-123"),
                 rptId = rptId,
-                debtorFiscalCode = DebtorFiscalCode("obfuscated-code"),
+                hashedDebtorFiscalCode = HashedDebtorFiscalCode("obfuscated-code"),
             )
 
         assertEquals(Iupd("iupd-123"), debtPosition.iupd)
         assertEquals(rptId, debtPosition.rptId)
-        assertEquals(DebtorFiscalCode("obfuscated-code"), debtPosition.debtorFiscalCode)
+        assertEquals(HashedDebtorFiscalCode("obfuscated-code"), debtPosition.hashedDebtorFiscalCode)
     }
 }

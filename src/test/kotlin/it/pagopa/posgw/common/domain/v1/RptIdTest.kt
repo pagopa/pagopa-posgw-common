@@ -1,27 +1,24 @@
 package it.pagopa.posgw.common.domain.v1
 
+import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
 
 class RptIdTest {
 
-    // 29 digits is a valid RPT identifier.
     private val validRptId = "32009090901302016723749670035"
-    private val invalidRptId = "1234567890"
 
     @Test
-    fun shouldValidateRptId() {
+    fun `exposes its value`() {
         val rptId = RptId(validRptId)
-        Assertions.assertEquals(validRptId, rptId.value)
+        assertEquals(validRptId, rptId.value)
     }
 
     @Test
-    fun shouldThrowException() {
-        Assertions.assertThrows(IllegalArgumentException::class.java) {
-            RptId(invalidRptId)
-        }
+    fun `rejects values that are not exactly 29 digits`() {
+        assertFailsWith<IllegalArgumentException> { RptId("1234567890") }
+        assertFailsWith<IllegalArgumentException> { RptId("3200909090130201672374967003A") }
     }
 
     @Test
