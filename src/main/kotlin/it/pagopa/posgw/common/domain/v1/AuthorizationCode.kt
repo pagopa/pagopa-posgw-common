@@ -7,4 +7,10 @@ import it.pagopa.posgw.common.annotation.ValueObject
  *
  * @param value Authorization code value.
  */
-@ValueObject @JvmInline value class AuthorizationCode(val value: String)
+@ValueObject
+@JvmInline
+value class AuthorizationCode(val value: String) {
+    init {
+        require(value.isNotBlank()) { "Authorization code cannot be blank" }
+    }
+}

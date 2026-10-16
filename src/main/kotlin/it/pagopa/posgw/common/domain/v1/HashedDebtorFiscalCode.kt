@@ -7,4 +7,10 @@ import it.pagopa.posgw.common.annotation.ValueObject
  *
  * @param value Obfuscated debtor fiscal code.
  */
-@ValueObject @JvmInline value class DebtorFiscalCode(val value: String)
+@ValueObject
+@JvmInline
+value class HashedDebtorFiscalCode(val value: String) {
+    init {
+        require(value.isNotBlank()) { "Hashed debtor fiscal code cannot be blank" }
+    }
+}

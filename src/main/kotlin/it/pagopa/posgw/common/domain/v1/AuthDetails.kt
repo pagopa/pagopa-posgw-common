@@ -16,15 +16,11 @@ data class AuthDetails(
     val authorizationCode: AuthorizationCode
 )
 
-/**
- * Enum representing the possible outcomes of a POS authentication process.
- *
- * @property value The string representation of the POS authentication outcome.
- */
-enum class AuthOutcome(val value: String) {
-    AUTHORIZED("AUTHORIZED"),
-    REFUSED("REFUSED"),
-    UNAUTHORIZED("UNAUTHORIZED"),
-    TIMEOUT("TIMEOUT"),
-    CANCELED("CANCELED")
+/** Enum representing the possible outcomes of a POS authentication process. */
+enum class AuthOutcome {
+    AUTHORIZED,
+    REFUSED,
+    UNAUTHORIZED,
+    TIMEOUT,
+    CANCELED
 }
