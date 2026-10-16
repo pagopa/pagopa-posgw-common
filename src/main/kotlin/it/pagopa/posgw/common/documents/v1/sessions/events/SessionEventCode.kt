@@ -73,6 +73,11 @@ enum class SessionEventCode {
     ECOMM_NTF_EXPIRED_EVT,
 
     /*
+     *  Authorization outcome notification to the eCommerce retried
+     */
+    ECOMM_NTF_RETRIED_EVT,
+
+    /*
      *  Error occurred
      */
     ERROR_EVT,
