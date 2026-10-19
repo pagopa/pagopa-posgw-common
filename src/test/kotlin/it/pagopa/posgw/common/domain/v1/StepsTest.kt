@@ -13,7 +13,7 @@ class StepsTest {
                 "ACTIVATING_TRANSACTION",
                 "REQUESTING_AUTHORIZATION",
                 "RECEIVING_AUTH_OUTCOME"),
-            Steps.entries.map { it.value },
+            Steps.entries.map { it.name },
         )
     }
 }

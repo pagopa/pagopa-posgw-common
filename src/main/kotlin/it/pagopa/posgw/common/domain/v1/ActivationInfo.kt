@@ -18,14 +18,11 @@ data class ActivationInfo(
     val amount: Long,
     val outcome: Outcome,
     val reason: String? = null
-)
+) {
 
-/**
- * Result of an activation attempt.
- *
- * @property value String representation of the outcome.
- */
-enum class Outcome(val value: String) {
-    OK("OK"),
-    KO("KO")
+    /** Result of an activation attempt. */
+    enum class Outcome {
+        OK,
+        KO
+    }
 }

@@ -8,7 +8,7 @@ class AuthOutcomeTest {
     fun `maps authorization outcomes to their external values`() {
         assertEquals(
             listOf("AUTHORIZED", "REFUSED", "UNAUTHORIZED", "TIMEOUT", "CANCELED"),
-            AuthOutcome.entries.map { it.value },
+            AuthOutcome.entries.map { it.name },
         )
     }
 }

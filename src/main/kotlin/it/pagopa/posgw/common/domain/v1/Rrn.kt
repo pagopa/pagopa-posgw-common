@@ -7,4 +7,10 @@ import it.pagopa.posgw.common.annotation.ValueObject
  *
  * @param value Retrieval Reference Number.
  */
-@ValueObject @JvmInline value class Rrn(val value: String)
+@ValueObject
+@JvmInline
+value class Rrn(val value: String) {
+    init {
+        require(value.isNotBlank()) { "RRN cannot be blank" }
+    }
+}
