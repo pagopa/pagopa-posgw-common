@@ -1,8 +1,8 @@
 package it.pagopa.posgw.common.domain.v1.sessions
 
 import it.pagopa.posgw.common.documents.v1.sessions.events.CiNotifiedEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.EcommerceNotifiedErrorEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.EcommerceNotifyEvent
+import it.pagopa.posgw.common.documents.v1.sessions.events.EcommNotifyEvent
+import it.pagopa.posgw.common.documents.v1.sessions.events.EcommNtfErrorEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithAuthComp
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithCiNotified
@@ -22,8 +22,8 @@ class CiNotified(
 
     override fun applyEvent(event: SessionEvent<*>): Session =
         when (event) {
-            is EcommerceNotifyEvent -> EcommerceNotified(this, event)
-            is EcommerceNotifiedErrorEvent -> EcommerceNotifyError(this, event)
+            is EcommNotifyEvent -> EcommerceNotified(this, event)
+            is EcommNtfErrorEvent -> EcommerceNotifyError(this, event)
             else -> this
         }
 }

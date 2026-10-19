@@ -1,8 +1,10 @@
 package it.pagopa.posgw.common.domain.v1.sessions.pojos
 
+import it.pagopa.posgw.common.documents.v1.sessions.data.CiNtfErrorData
+
 abstract class BaseSessionWithCiNtfError(
     val sessionWithAuthComp: BaseSessionWithAuthComp,
-    // todo add specific data
+    val CiNtfErrorData: CiNtfErrorData,
     updatedAt: java.time.Instant
 ) :
     BaseSessionWithAuthComp(

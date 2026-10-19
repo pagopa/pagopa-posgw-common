@@ -1,6 +1,5 @@
 package it.pagopa.posgw.common.domain.v1.sessions
 
-import it.pagopa.posgw.common.documents.v1.sessions.data.PosSessionInitializedData
 import it.pagopa.posgw.common.documents.v1.sessions.data.SessionInitializedData
 import it.pagopa.posgw.common.documents.v1.sessions.events.DeptPositionCreatedEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.ErrorEvent

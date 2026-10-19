@@ -2,8 +2,8 @@ package it.pagopa.posgw.common.domain.v1.sessions
 
 import it.pagopa.posgw.common.documents.v1.sessions.data.AuthOutcomeReceivedData
 import it.pagopa.posgw.common.documents.v1.sessions.events.AuthOutcomeReceivedEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.CiNotifiedErrorEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.CiNotifiedEvent
+import it.pagopa.posgw.common.documents.v1.sessions.events.CiNtfErrorEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithAuthComp
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithAuthReq
@@ -29,7 +29,7 @@ class AuthorizationCompleted(
     override fun applyEvent(event: SessionEvent<*>): Session =
         when (event) {
             is CiNotifiedEvent -> CiNotified(this, event)
-            is CiNotifiedErrorEvent -> CiNotifyError(this, event)
+            is CiNtfErrorEvent -> CiNotifyError(this, event)
             else -> this
         }
 }

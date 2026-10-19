@@ -1,6 +1,6 @@
 package it.pagopa.posgw.common.domain.v1.sessions
 
-import it.pagopa.posgw.common.documents.v1.sessions.events.EcommerceNotifyEvent
+import it.pagopa.posgw.common.documents.v1.sessions.events.EcommNotifyEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithCiNotified
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithEcommNotified
@@ -13,7 +13,7 @@ class EcommerceNotified(sessionWithCiNotified: BaseSessionWithCiNotified, update
 
     constructor(
         session: BaseSessionWithCiNotified,
-        event: EcommerceNotifyEvent
+        event: EcommNotifyEvent
     ) : this(sessionWithCiNotified = session, updatedAt = event.timestamp)
 
     override fun applyEvent(event: SessionEvent<*>): Session {
