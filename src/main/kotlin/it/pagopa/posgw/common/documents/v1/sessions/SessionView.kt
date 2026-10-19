@@ -8,7 +8,6 @@ import it.pagopa.posgw.common.documents.v1.sessions.data.DebtPosition
 import it.pagopa.posgw.common.documents.v1.sessions.data.EcommNtfErrorData
 import it.pagopa.posgw.common.documents.v1.sessions.data.ErrorData
 import it.pagopa.posgw.common.documents.v1.sessions.data.TransactionActivatedData
-import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
 import it.pagopa.posgw.common.domain.v1.sessions.SessionStatus
 import java.time.Instant
 import org.springframework.data.annotation.Id
