@@ -1,11 +1,12 @@
 package it.pagopa.posgw.common.domain.v1.sessions
 
 import it.pagopa.posgw.common.documents.v1.sessions.data.PosSessionInitializedData
+import it.pagopa.posgw.common.documents.v1.sessions.data.SessionInitializedData
 import it.pagopa.posgw.common.documents.v1.sessions.events.DeptPositionCreatedEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.ErrorEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.ExpiredEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.PosSessionInitializedEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
+import it.pagopa.posgw.common.documents.v1.sessions.events.SessionInitializedEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.TransactionActivatedEvent
 import it.pagopa.posgw.common.domain.v1.CorrelationId
 import it.pagopa.posgw.common.domain.v1.SessionId
@@ -16,7 +17,7 @@ class Initialized(
     sessionId: SessionId,
     correlationId: CorrelationId,
     createdAt: Instant,
-    initializeData: PosSessionInitializedData
+    initializeData: SessionInitializedData
 ) :
     Session,
     BaseSessionInitialized(initializeData, sessionId, createdAt, correlationId, createdAt) {
@@ -24,8 +25,8 @@ class Initialized(
     override val status: SessionStatus = SessionStatus.INITIALIZED
 
     constructor(
-        event: PosSessionInitializedEvent
-    ) : this(event.sessionId, event.data.correlationId, event.timestamp, event.data)
+        event: SessionInitializedEvent
+    ) : this(SessionId(event.sessionId), CorrelationId.of(event.data.correlationId), event.timestamp, event.data)
 
     override fun applyEvent(event: SessionEvent<*>): Session =
         when (event) {

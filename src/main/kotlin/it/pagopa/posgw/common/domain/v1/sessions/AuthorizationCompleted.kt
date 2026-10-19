@@ -1,7 +1,7 @@
 package it.pagopa.posgw.common.domain.v1.sessions
 
-import it.pagopa.posgw.common.documents.v1.sessions.data.AuthorizationOutcomeReceivedData
-import it.pagopa.posgw.common.documents.v1.sessions.events.AuthorizationOutcomeReceivedEvent
+import it.pagopa.posgw.common.documents.v1.sessions.data.AuthOutcomeReceivedData
+import it.pagopa.posgw.common.documents.v1.sessions.events.AuthOutcomeReceivedEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.CiNotifiedErrorEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.CiNotifiedEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
@@ -11,7 +11,7 @@ import java.time.Instant
 
 class AuthorizationCompleted(
     sessionWithAuthReq: BaseSessionWithAuthReq,
-    authorizationData: AuthorizationOutcomeReceivedData,
+    authorizationData: AuthOutcomeReceivedData,
     updatedAt: Instant
 ) :
     Session,
@@ -22,7 +22,7 @@ class AuthorizationCompleted(
 
     constructor(
         session: BaseSessionWithAuthReq,
-        event: AuthorizationOutcomeReceivedEvent
+        event: AuthOutcomeReceivedEvent
     ) : this(
         sessionWithAuthReq = session, authorizationData = event.data, updatedAt = event.timestamp)
 

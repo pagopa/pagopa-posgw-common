@@ -1,10 +1,10 @@
 package it.pagopa.posgw.common.domain.v1.sessions
 
 import it.pagopa.posgw.common.documents.v1.sessions.data.TransactionActivatedData
+import it.pagopa.posgw.common.documents.v1.sessions.events.AuthRequestErrorEvent
+import it.pagopa.posgw.common.documents.v1.sessions.events.AuthRequestedEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.ErrorEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.ExpiredEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.PosAuthorizationRequestErrorEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.PosAuthorizationRequestEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.TransactionActivatedEvent
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionInitialized
@@ -34,8 +34,8 @@ class TransactionActivated(
 
     override fun applyEvent(event: SessionEvent<*>): Session =
         when (event) {
-            is PosAuthorizationRequestEvent -> AuthorizationRequested(this, event)
-            is PosAuthorizationRequestErrorEvent -> AuthorizationRequestedError(this, event)
+            is AuthRequestedEvent -> AuthorizationRequested(this, event)
+            is AuthRequestErrorEvent -> AuthorizationRequestedError(this, event)
             is ErrorEvent -> Error(this, event)
             is ExpiredEvent -> Expired(this, event)
             else -> this

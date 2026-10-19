@@ -1,7 +1,6 @@
 package it.pagopa.posgw.common.domain.v1.sessions
 
-import it.pagopa.posgw.common.documents.v1.sessions.events.EcommerceNotifiedErrorEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.EcommerceNotifyEvent
+import it.pagopa.posgw.common.documents.v1.sessions.events.EcommNtfErrorEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithCiNotified
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithEcommNtfError
@@ -14,12 +13,12 @@ class EcommerceNotifyError(sessionWithCiNotified: BaseSessionWithCiNotified, upd
 
     constructor(
         session: BaseSessionWithCiNotified,
-        event: EcommerceNotifiedErrorEvent
+        event: EcommNtfErrorEvent
     ) : this(sessionWithCiNotified = session, updatedAt = event.timestamp)
 
     override fun applyEvent(event: SessionEvent<*>): Session =
         when (event) {
-            is EcommerceNotifyEvent -> EcommerceNotified(this, event)
+            is EcommNtfErrorEvent -> EcommerceNotified(this, event)
             else -> this
         }
 }
