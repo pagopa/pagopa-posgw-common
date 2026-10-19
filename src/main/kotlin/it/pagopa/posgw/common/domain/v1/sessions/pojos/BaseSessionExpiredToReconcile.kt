@@ -1,10 +1,11 @@
 package it.pagopa.posgw.common.domain.v1.sessions.pojos
 
+import it.pagopa.posgw.common.documents.v1.sessions.data.ExpiredData
 import java.time.Instant
 
 abstract class BaseSessionExpiredToReconcile(
     val sessionWithTransactionAct: BaseSessionWithTransactionAct,
-    // todo add specific data
+    val data: ExpiredData,
     updatedAt: Instant
 ) :
     BaseSessionWithTransactionAct(

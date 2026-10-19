@@ -14,28 +14,31 @@ class CiNotifyExpired(
     sessionWithCiNtfError: BaseSessionWithCiNtfError,
     ciRetriedData: CiNtfRetriedData?,
     updatedAt: Instant,
-) : Session, BaseSessionWithCiNtfExpired(sessionWithCiNtfError, ciRetriedData, updatedAt = updatedAt) {
+) :
+    Session,
+    BaseSessionWithCiNtfExpired(sessionWithCiNtfError, ciRetriedData, updatedAt = updatedAt) {
 
     constructor(
         session: BaseSessionWithCiNtfError,
         event: CiNotifyExpiredEvent
-    ): this(sessionWithCiNtfError = session, null,  updatedAt = event.timestamp)
+    ) : this(sessionWithCiNtfError = session, null, updatedAt = event.timestamp)
 
     constructor(
         session: BaseSessionWithCiNtfExpired,
         event: CiNtfRetriedEvent
-    ): this(sessionWithCiNtfError = session.sessionWithCiNtfError, ciRetriedData = event.data, updatedAt = event.timestamp)
-
+    ) : this(
+        sessionWithCiNtfError = session.sessionWithCiNtfError,
+        ciRetriedData = event.data,
+        updatedAt = event.timestamp)
 
     override val status: SessionStatus = SessionStatus.CI_NTF_EXPIRED
 
     override fun applyEvent(event: SessionEvent<*>): Session {
-        return when(event){
+        return when (event) {
             is CiNotifiedEvent -> CiNotified(this, event)
             is CiNtfRetriedEvent -> CiNotifyExpired(this, event)
             is ExpiredEvent -> ExpiredToReconcile(this, event)
             else -> this
         }
-
     }
 }

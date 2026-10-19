@@ -21,7 +21,8 @@ class AuthorizationRequestedError(
     override val status: SessionStatus = SessionStatus.AUTH_REQUEST_ERROR
 
     /**
-     * Constructor used to create an instance of AuthorizationRequestedError from a BaseSessionWithTransactionAct and an AuthRequestErrorEvent.
+     * Constructor used to create an instance of AuthorizationRequestedError from a
+     * BaseSessionWithTransactionAct and an AuthRequestErrorEvent.
      */
     constructor(
         session: BaseSessionWithTransactionAct,
@@ -29,7 +30,8 @@ class AuthorizationRequestedError(
     ) : this(sessionWithTransactionAct = session, updatedAt = event.timestamp)
 
     /**
-     * Constructor used to create an instance of AuthorizationRequestedError from a BaseSessionWithTransactionAct and an AuthRequestRetriedEvent.
+     * Constructor used to create an instance of AuthorizationRequestedError from a
+     * BaseSessionWithTransactionAct and an AuthRequestRetriedEvent.
      */
     constructor(
         session: BaseSessionWithTransactionAct,

@@ -25,7 +25,11 @@ class Initialized(
 
     constructor(
         event: SessionInitializedEvent
-    ) : this(SessionId(event.sessionId), CorrelationId.of(event.data.correlationId), event.timestamp, event.data)
+    ) : this(
+        SessionId(event.sessionId),
+        CorrelationId.of(event.data.correlationId),
+        event.timestamp,
+        event.data)
 
     override fun applyEvent(event: SessionEvent<*>): Session =
         when (event) {

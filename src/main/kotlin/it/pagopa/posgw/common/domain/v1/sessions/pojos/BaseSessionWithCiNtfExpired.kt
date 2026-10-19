@@ -2,11 +2,13 @@ package it.pagopa.posgw.common.domain.v1.sessions.pojos
 
 import it.pagopa.posgw.common.documents.v1.sessions.data.CiNtfRetriedData
 
-
 abstract class BaseSessionWithCiNtfExpired(
     val sessionWithCiNtfError: BaseSessionWithCiNtfError,
     val ciRetriedData: CiNtfRetriedData?,
     updatedAt: java.time.Instant
 ) :
     BaseSessionWithCiNtfError(
-        sessionWithAuthComp = sessionWithCiNtfError.sessionWithAuthComp, sessionWithCiNtfError.CiNtfErrorData, updatedAt = updatedAt)
+        sessionWithAuthComp = sessionWithCiNtfError.sessionWithAuthComp,
+        sessionWithCiNtfError.ciNtfErrorData,
+        sessionWithCiNtfError.ciNtfRetriedData,
+        updatedAt = updatedAt)
