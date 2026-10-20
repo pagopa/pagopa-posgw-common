@@ -13,7 +13,7 @@ plugins {
 
 group = "it.pagopa"
 
-version = "0.0.10"
+version = "0.0.11"
 
 apply(plugin = "com.dipien.semantic-version")
 
@@ -55,6 +55,7 @@ publishing {
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter")
   implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
+  implementation("org.springframework.boot:spring-boot-starter-data-redis")
   implementation("org.jetbrains.kotlin:kotlin-reflect")
   implementation("io.projectreactor:reactor-core")
   implementation("io.projectreactor.netty:reactor-netty")
