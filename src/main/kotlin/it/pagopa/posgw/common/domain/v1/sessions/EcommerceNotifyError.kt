@@ -11,6 +11,25 @@ import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithCiNotified
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithEcommNtfError
 import java.time.Instant
 
+/**
+ * Session state representing a failed eCommerce notification.
+ *
+ * Retry events update the retry data; an expiry event moves the session to an expired state.
+ *
+ * **Created from:**
+ * - [CiNotified] via [EcommNtfErrorEvent]
+ * - [EcommerceNotifyError] via [EcommNtfRetriedEvent]
+ *
+ * **Transitions:**
+ * - [EcommerceNotified] via [EcommNotifyEvent]
+ * - [EcommerceNotifyError] via [EcommNtfRetriedEvent]
+ * - [EcommerceNotifyExpired] via [EcommNtfExpiredEvent]
+ *
+ * @param sessionWithCiNotified creditor-institution-notified state retained by this state
+ * @param ecommNotifyErrorData data describing the notification failure
+ * @param ecommNotifyRetriedData latest retry data, or `null` before a retry
+ * @param updatedAt time of the latest session event
+ */
 class EcommerceNotifyError(
     sessionWithCiNotified: BaseSessionWithCiNotified,
     ecommNotifyErrorData: EcommNtfErrorData,

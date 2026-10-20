@@ -11,6 +11,21 @@ import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionInitialized
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithTransactionAct
 import java.time.Instant
 
+/**
+ * Session state reached after transaction activation.
+ *
+ * **Created from:** [Initialized] or [DebtPositionCreated] via [TransactionActivatedEvent].
+ *
+ * **Transitions:**
+ * - [AuthorizationRequested] via [AuthRequestedEvent]
+ * - [AuthorizationRequestedError] via [AuthRequestErrorEvent]
+ * - [Error] via [ErrorEvent]
+ * - [Expired] via [ExpiredEvent]
+ *
+ * @param transactionActivatedData data returned by transaction activation
+ * @param initializedSession initialized or debt-position-created predecessor state
+ * @param updatedAt time of the transaction-activation event
+ */
 class TransactionActivated(
     transactionActivatedData: TransactionActivatedData,
     initializedSession: BaseSessionInitialized,

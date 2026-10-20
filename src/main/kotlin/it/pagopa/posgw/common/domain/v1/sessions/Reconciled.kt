@@ -6,6 +6,16 @@ import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionExpiredToRecon
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionReconciled
 import java.time.Instant
 
+/**
+ * Terminal session state reached after an expired transaction is reconciled.
+ *
+ * **Created from:** [ExpiredToReconcile] via [ReconciledEvent].
+ *
+ * **Transitions:** None; later events leave this state unchanged.
+ *
+ * @param sessionExpiredToReconcile expired state being reconciled
+ * @param updatedAt time of the reconciliation event
+ */
 class Reconciled(sessionExpiredToReconcile: BaseSessionExpiredToReconcile, updatedAt: Instant) :
     Session,
     BaseSessionReconciled(sessionToReconcile = sessionExpiredToReconcile, updatedAt = updatedAt) {

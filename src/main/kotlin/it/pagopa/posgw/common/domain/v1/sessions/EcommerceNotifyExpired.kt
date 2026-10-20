@@ -9,6 +9,21 @@ import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithEcommNtfEr
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithEcommNtfExpired
 import java.time.Instant
 
+/**
+ * Session state representing an expired eCommerce notification.
+ *
+ * **Created from:**
+ * - [EcommerceNotifyError] via [EcommNtfExpiredEvent]
+ * - [EcommerceNotifyExpired] via [EcommNtfRetriedEvent]
+ *
+ * **Transitions:**
+ * - [EcommerceNotified] via [EcommNotifyEvent]
+ * - [EcommerceNotifyExpired] via [EcommNtfRetriedEvent]
+ *
+ * @param sessionWithEcommNtfError failed notification state retained by this state
+ * @param ecommNtfExpiredRetriedData retry data recorded after expiry, if any
+ * @param updatedAt time of the latest session event
+ */
 class EcommerceNotifyExpired(
     sessionWithEcommNtfError: BaseSessionWithEcommNtfError,
     ecommNtfExpiredRetriedData: EcommNtfRetriedData? = null,

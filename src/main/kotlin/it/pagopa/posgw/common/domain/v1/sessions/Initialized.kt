@@ -12,6 +12,22 @@ import it.pagopa.posgw.common.domain.v1.SessionId
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionInitialized
 import java.time.Instant
 
+/**
+ * Session state created from the initialization event.
+ *
+ * **Created from:** [EmptySession] via [SessionInitializedEvent].
+ *
+ * **Transitions:**
+ * - [DebtPositionCreated] via [DeptPositionCreatedEvent]
+ * - [TransactionActivated] via [TransactionActivatedEvent]
+ * - [Error] via [ErrorEvent]
+ * - [Expired] via [ExpiredEvent]
+ *
+ * @param sessionId identifier assigned to the session
+ * @param correlationId identifier used to correlate related operations
+ * @param createdAt time the session was initialized
+ * @param initializeData initialization data retained by subsequent states
+ */
 class Initialized(
     sessionId: SessionId,
     correlationId: CorrelationId,

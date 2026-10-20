@@ -10,6 +10,22 @@ import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionInitialized
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithDebtPos
 import java.time.Instant
 
+/**
+ * Session state reached after a debt position is created.
+ *
+ * Its debt-position data is retained when the session advances to transaction activation.
+ *
+ * **Created from:** [Initialized] via [DeptPositionCreatedEvent].
+ *
+ * **Transitions:**
+ * - [TransactionActivated] via [TransactionActivatedEvent]
+ * - [Error] via [ErrorEvent]
+ * - [Expired] via [ExpiredEvent]
+ *
+ * @param sessionInitialized initialized state from which the debt position was created
+ * @param debtPositionData created debt-position data
+ * @param updatedAt time of the debt-position-created event
+ */
 class DebtPositionCreated(
     sessionInitialized: BaseSessionInitialized,
     debtPositionData: DebtPositionCreatedData,
