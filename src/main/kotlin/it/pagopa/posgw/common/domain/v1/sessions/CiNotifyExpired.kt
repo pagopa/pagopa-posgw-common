@@ -12,11 +12,11 @@ import java.time.Instant
 
 class CiNotifyExpired(
     sessionWithCiNtfError: BaseSessionWithCiNtfError,
-    ciRetriedData: CiNtfRetriedData?,
+    ciExpRetriedData: CiNtfRetriedData?,
     updatedAt: Instant,
 ) :
     Session,
-    BaseSessionWithCiNtfExpired(sessionWithCiNtfError, ciRetriedData, updatedAt = updatedAt) {
+    BaseSessionWithCiNtfExpired(sessionWithCiNtfError, ciExpRetriedData, updatedAt = updatedAt) {
 
     constructor(
         session: BaseSessionWithCiNtfError,
@@ -27,9 +27,7 @@ class CiNotifyExpired(
         session: BaseSessionWithCiNtfExpired,
         event: CiNtfRetriedEvent
     ) : this(
-        sessionWithCiNtfError = session.sessionWithCiNtfError,
-        ciRetriedData = event.data,
-        updatedAt = event.timestamp)
+        sessionWithCiNtfError = session, ciExpRetriedData = event.data, updatedAt = event.timestamp)
 
     override val status: SessionStatus = SessionStatus.CI_NTF_EXPIRED
 

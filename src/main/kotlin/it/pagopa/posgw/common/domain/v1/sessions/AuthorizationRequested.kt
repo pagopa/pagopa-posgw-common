@@ -21,6 +21,7 @@ class AuthorizationRequested(
         updatedAt = updatedAt) {
 
     override val status: SessionStatus = SessionStatus.AUTH_REQUESTED
+    val sessionBeforeAuthReq: BaseSessionWithTransactionAct = sessionWithTransactionAct
 
     constructor(
         session: BaseSessionWithTransactionAct,

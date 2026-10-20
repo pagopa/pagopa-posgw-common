@@ -20,6 +20,7 @@ class Expired(
         updatedAt = updatedAt) {
 
     override val status: SessionStatus = SessionStatus.EXPIRED
+    val sessionBeforeExpired: BaseSessionInitialized = initializedSession
 
     constructor(
         session: BaseSessionInitialized,

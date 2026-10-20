@@ -4,7 +4,7 @@ import it.pagopa.posgw.common.documents.v1.sessions.data.AuthRequestedData
 import java.time.Instant
 
 abstract class BaseSessionWithAuthReq(
-    val sessionWithTransactionAct: BaseSessionWithTransactionAct,
+    sessionWithTransactionAct: BaseSessionWithTransactionAct,
     val authorizationRequestData: AuthRequestedData,
     updatedAt: Instant
 ) :

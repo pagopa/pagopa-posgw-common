@@ -13,22 +13,23 @@ import java.time.Instant
 
 class TransactionActivated(
     transactionActivatedData: TransactionActivatedData,
-    sessionInitialized: BaseSessionInitialized,
+    initializedSession: BaseSessionInitialized,
     updatedAt: Instant
 ) :
     Session,
     BaseSessionWithTransactionAct(
-        sessionInitialized = sessionInitialized,
+        initializedSession = initializedSession,
         transactionActivateData = transactionActivatedData,
         updatedAt = updatedAt) {
 
     override val status: SessionStatus = SessionStatus.TRANSACTION_ACTIVATED
+    val sessionBeforeTransAct: BaseSessionInitialized = initializedSession
 
     constructor(
         session: BaseSessionInitialized,
         event: TransactionActivatedEvent
     ) : this(
-        sessionInitialized = session,
+        initializedSession = session,
         transactionActivatedData = event.data,
         updatedAt = event.timestamp)
 

@@ -17,7 +17,5 @@ class Reconciled(sessionExpiredToReconcile: BaseSessionExpiredToReconcile, updat
 
     override val status: SessionStatus = SessionStatus.RECONCILED
 
-    override fun applyEvent(event: SessionEvent<*>): Session {
-        TODO("Not yet implemented")
-    }
+    override fun applyEvent(event: SessionEvent<*>): Session = this
 }

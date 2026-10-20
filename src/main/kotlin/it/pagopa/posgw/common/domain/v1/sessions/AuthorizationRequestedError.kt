@@ -1,5 +1,7 @@
 package it.pagopa.posgw.common.domain.v1.sessions
 
+import it.pagopa.posgw.common.documents.v1.sessions.data.AuthRequestErrorData
+import it.pagopa.posgw.common.documents.v1.sessions.data.AuthRequestRetriedData
 import it.pagopa.posgw.common.documents.v1.sessions.events.AuthRequestErrorEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.AuthRequestRetriedEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.AuthRequestedEvent
@@ -12,11 +14,16 @@ import java.time.Instant
 
 class AuthorizationRequestedError(
     sessionWithTransactionAct: BaseSessionWithTransactionAct,
+    authRequestErrorData: AuthRequestErrorData,
+    authRequestRetriedData: AuthRequestRetriedData?,
     updatedAt: Instant,
 ) :
     Session,
     BaseSessionWithAuthError(
-        sessionWithTransactionAct = sessionWithTransactionAct, updatedAt = updatedAt) {
+        sessionWithTransactionAct = sessionWithTransactionAct,
+        authRequestErrorData = authRequestErrorData,
+        authRequestRetriedData = authRequestRetriedData,
+        updatedAt = updatedAt) {
 
     override val status: SessionStatus = SessionStatus.AUTH_REQUEST_ERROR
 
@@ -27,16 +34,24 @@ class AuthorizationRequestedError(
     constructor(
         session: BaseSessionWithTransactionAct,
         event: AuthRequestErrorEvent
-    ) : this(sessionWithTransactionAct = session, updatedAt = event.timestamp)
+    ) : this(
+        sessionWithTransactionAct = session,
+        authRequestErrorData = event.data,
+        authRequestRetriedData = null,
+        updatedAt = event.timestamp)
 
     /**
      * Constructor used to create an instance of AuthorizationRequestedError from a
      * BaseSessionWithTransactionAct and an AuthRequestRetriedEvent.
      */
     constructor(
-        session: BaseSessionWithTransactionAct,
+        session: BaseSessionWithAuthError,
         event: AuthRequestRetriedEvent
-    ) : this(sessionWithTransactionAct = session, updatedAt = event.timestamp)
+    ) : this(
+        sessionWithTransactionAct = session,
+        authRequestErrorData = session.authRequestErrorData,
+        authRequestRetriedData = event.data,
+        updatedAt = event.timestamp)
 
     override fun applyEvent(event: SessionEvent<*>): Session =
         when (event) {

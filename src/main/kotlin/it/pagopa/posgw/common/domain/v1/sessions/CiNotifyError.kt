@@ -13,7 +13,7 @@ import java.time.Instant
 
 class CiNotifyError(
     sessionWithAuthComp: BaseSessionWithAuthComp,
-    ciNtfErrorData: CiNtfErrorData? = null,
+    ciNtfErrorData: CiNtfErrorData,
     ciNtfRetriedData: CiNtfRetriedData? = null,
     updatedAt: Instant
 ) :
@@ -29,10 +29,13 @@ class CiNotifyError(
         sessionWithAuthComp = session, ciNtfErrorData = event.data, updatedAt = event.timestamp)
 
     constructor(
-        session: BaseSessionWithAuthComp,
+        session: BaseSessionWithCiNtfError,
         event: CiNtfRetriedEvent
     ) : this(
-        sessionWithAuthComp = session, ciNtfRetriedData = event.data, updatedAt = event.timestamp)
+        sessionWithAuthComp = session,
+        ciNtfErrorData = session.ciNtfErrorData,
+        ciNtfRetriedData = event.data,
+        updatedAt = event.timestamp)
 
     override fun applyEvent(event: SessionEvent<*>): Session {
         return when (event) {

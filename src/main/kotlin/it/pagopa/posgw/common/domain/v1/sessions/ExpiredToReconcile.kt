@@ -17,6 +17,9 @@ class ExpiredToReconcile(
     Session,
     BaseSessionExpiredToReconcile(sessionWithTransactionAct, data = expiredData, updatedAt) {
 
+    override val status: SessionStatus = SessionStatus.EXPIRED_TO_RECONCILE
+    val sessionBeforeExpRecon: BaseSessionWithTransactionAct = sessionWithTransactionAct
+
     constructor(
         session: BaseSessionWithTransactionAct,
         event: ExpiredEvent
@@ -26,8 +29,6 @@ class ExpiredToReconcile(
         session: BaseSessionWithCiNtfExpired,
         event: ExpiredEvent
     ) : this(sessionWithTransactionAct = session, event.data, updatedAt = event.timestamp)
-
-    override val status: SessionStatus = SessionStatus.EXPIRED_TO_RECONCILE
 
     override fun applyEvent(event: SessionEvent<*>): Session =
         when (event) {

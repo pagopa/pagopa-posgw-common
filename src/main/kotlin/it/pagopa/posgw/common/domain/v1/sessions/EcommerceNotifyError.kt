@@ -13,7 +13,7 @@ import java.time.Instant
 
 class EcommerceNotifyError(
     sessionWithCiNotified: BaseSessionWithCiNotified,
-    ecommNotifyErrorData: EcommNtfErrorData? = null,
+    ecommNotifyErrorData: EcommNtfErrorData,
     ecommNotifyRetriedData: EcommNtfRetriedData? = null,
     updatedAt: Instant
 ) :
@@ -36,6 +36,7 @@ class EcommerceNotifyError(
         event: EcommNtfRetriedEvent
     ) : this(
         sessionWithCiNotified = session,
+        ecommNotifyErrorData = session.ecommNotifyErrorData,
         ecommNotifyRetriedData = event.data,
         updatedAt = event.timestamp)
 
