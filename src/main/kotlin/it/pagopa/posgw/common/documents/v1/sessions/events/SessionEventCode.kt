@@ -1,94 +1,41 @@
 package it.pagopa.posgw.common.documents.v1.sessions.events
 
+/** Event codes used to identify session event kinds. */
 enum class SessionEventCode {
-
-    /*
-     *  Payment session initialized and list of POS terminal retrieved
-     */
+    /** Session initialized and POS terminal identifiers retrieved. */
     SESSION_INITIALIZED_EVT,
-
-    /*
-     *  Debt position created
-     */
+    /** Debt positions created for the session. */
     DEBT_POSITION_CREATED_EVT,
-
-    /*
-     *  Transaction activated on eCommerce
-     */
+    /** Transaction activated on eCommerce. */
     TRANSACTION_ACTIVATED_EVT,
-
-    /*
-     *  Authorization requested done on the PSP POS layer
-     */
+    /** Authorization requested through the PSP POS layer. */
     AUTH_REQUESTED_EVT,
-
-    /*
-     *  Error occurred during the authorization request on the PSP POS layer
-     */
+    /** Authorization request failed on the PSP POS layer. */
     AUTH_REQUEST_ERROR_EVT,
-
-    /*
-     *  Authorization request retried on the PSP POS layer
-     */
+    /** Failed authorization request retried on the PSP POS layer. */
     AUTH_REQUEST_RETRIED_EVT,
-
-    /*
-     *  Authorization outcome received from the PSP POS layer
-     */
+    /** Authorization outcome received from the PSP POS layer. */
     AUTH_OUTCOME_RECEIVED_EVT,
-
-    /*
-     *  Authorization outcome notified to the CI
-     */
+    /** Authorization outcome notification sent to the creditor institution. */
     CI_NOTIFIED_EVT,
-
-    /*
-     *  Authorization outcome notification to the CI failed
-     */
+    /** Authorization outcome notification to the creditor institution failed. */
     CI_NTF_ERROR_EVT,
-
-    /*
-     *  Authorization outcome notification to the CI retried
-     */
+    /** Failed creditor-institution notification retried. */
     CI_NTF_RETRIED_EVT,
-
-    /*
-     *  Authorization outcome notification to the CI expired
-     */
+    /** Creditor-institution notification expired. */
     CI_NTF_EXPIRED_EVT,
-
-    /*
-     *  Authorization outcome notified to the eCommerce
-     */
+    /** Authorization outcome notification sent to eCommerce. */
     ECOMM_NOTIFIED_EVT,
-
-    /*
-     *  Error occurred during the authorization outcome notification to the eCommerce
-     */
+    /** Authorization outcome notification to eCommerce failed. */
     ECOMM_NTF_ERROR_EVT,
-
-    /*
-     *  Authorization outcome notification to the eCommerce expired
-     */
+    /** eCommerce notification expired. */
     ECOMM_NTF_EXPIRED_EVT,
-
-    /*
-     *  Authorization outcome notification to the eCommerce retried
-     */
+    /** Failed eCommerce notification retried. */
     ECOMM_NTF_RETRIED_EVT,
-
-    /*
-     *  Error occurred
-     */
+    /** Session-level error occurred. */
     ERROR_EVT,
-
-    /*
-     *  Session expired
-     */
+    /** Session expired. */
     EXPIRED_EVT,
-
-    /*
-     *  Session reconciled
-     */
+    /** Expired session reconciled. */
     RECONCILED_EVT
 }

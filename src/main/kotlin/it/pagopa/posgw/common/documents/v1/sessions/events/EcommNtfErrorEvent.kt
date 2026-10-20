@@ -4,6 +4,12 @@ import it.pagopa.posgw.common.documents.v1.sessions.data.EcommNtfErrorData
 import java.util.UUID
 import org.springframework.data.mongodb.core.mapping.Document
 
+/**
+ * Records an eCommerce notification failure.
+ *
+ * @param sessionId identifier of the session
+ * @param data notification error details
+ */
 @Document(collection = "eventstore")
 data class EcommNtfErrorEvent(
     override val sessionId: UUID,
