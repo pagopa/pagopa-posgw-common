@@ -9,6 +9,19 @@ import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithCiNtfExpir
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithTransactionAct
 import java.time.Instant
 
+/**
+ * Session state awaiting reconciliation after expiry during transaction processing.
+ *
+ * **Created from:** [AuthorizationRequested], [AuthorizationRequestedError], or [CiNotifyExpired]
+ * via [ExpiredEvent].
+ *
+ * **Transitions:**
+ * - [Reconciled] via [ReconciledEvent]
+ *
+ * @param sessionWithTransactionAct transaction state from which expiry occurred
+ * @param expiredData details of the expiry
+ * @param updatedAt time of the expiry event
+ */
 class ExpiredToReconcile(
     sessionWithTransactionAct: BaseSessionWithTransactionAct,
     expiredData: ExpiredData,

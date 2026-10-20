@@ -11,6 +11,25 @@ import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithAuthComp
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithCiNtfError
 import java.time.Instant
 
+/**
+ * Session state representing a failed creditor-institution notification.
+ *
+ * Retry events update the retry data; an expiry event moves the session to an expired state.
+ *
+ * **Created from:**
+ * - [AuthorizationCompleted] via [CiNtfErrorEvent]
+ * - [CiNotifyError] via [CiNtfRetriedEvent]
+ *
+ * **Transitions:**
+ * - [CiNotified] via [CiNotifiedEvent]
+ * - [CiNotifyError] via [CiNtfRetriedEvent]
+ * - [CiNotifyExpired] via [CiNotifyExpiredEvent]
+ *
+ * @param sessionWithAuthComp authorization-completed state retained by this state
+ * @param ciNtfErrorData data describing the notification failure
+ * @param ciNtfRetriedData latest retry data, or `null` before a retry
+ * @param updatedAt time of the latest session event
+ */
 class CiNotifyError(
     sessionWithAuthComp: BaseSessionWithAuthComp,
     ciNtfErrorData: CiNtfErrorData,

@@ -10,6 +10,22 @@ import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithCiNtfError
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithCiNtfExpired
 import java.time.Instant
 
+/**
+ * Session state representing an expired creditor-institution notification.
+ *
+ * **Created from:**
+ * - [CiNotifyError] via [CiNotifyExpiredEvent]
+ * - [CiNotifyExpired] via [CiNtfRetriedEvent]
+ *
+ * **Transitions:**
+ * - [CiNotified] via [CiNotifiedEvent]
+ * - [CiNotifyExpired] via [CiNtfRetriedEvent]
+ * - [ExpiredToReconcile] via [ExpiredEvent]
+ *
+ * @param sessionWithCiNtfError failed notification state retained by this state
+ * @param ciExpRetriedData retry data recorded after expiry, if any
+ * @param updatedAt time of the latest session event
+ */
 class CiNotifyExpired(
     sessionWithCiNtfError: BaseSessionWithCiNtfError,
     ciExpRetriedData: CiNtfRetriedData?,

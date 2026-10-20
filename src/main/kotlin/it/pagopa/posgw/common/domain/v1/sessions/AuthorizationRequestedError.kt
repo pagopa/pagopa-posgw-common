@@ -12,6 +12,24 @@ import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithAuthError
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithTransactionAct
 import java.time.Instant
 
+/**
+ * Session state representing a failed authorization request and any subsequent retry.
+ *
+ * **Created from:**
+ * - [TransactionActivated] via [AuthRequestErrorEvent]
+ * - [AuthorizationRequestedError] via [AuthRequestRetriedEvent]
+ *
+ * **Transitions:**
+ * - [AuthorizationRequested] via [AuthRequestedEvent]
+ * - [AuthorizationRequestedError] via [AuthRequestRetriedEvent]
+ * - [Error] via [ErrorEvent]
+ * - [ExpiredToReconcile] via [ExpiredEvent]
+ *
+ * @param sessionWithTransactionAct state from which authorization was requested
+ * @param authRequestErrorData data describing the request failure
+ * @param authRequestRetriedData latest retry data, or `null` before a retry
+ * @param updatedAt time of the latest session event
+ */
 class AuthorizationRequestedError(
     sessionWithTransactionAct: BaseSessionWithTransactionAct,
     authRequestErrorData: AuthRequestErrorData,
@@ -27,10 +45,7 @@ class AuthorizationRequestedError(
 
     override val status: SessionStatus = SessionStatus.AUTH_REQUEST_ERROR
 
-    /**
-     * Constructor used to create an instance of AuthorizationRequestedError from a
-     * BaseSessionWithTransactionAct and an AuthRequestErrorEvent.
-     */
+    /** Creates this state from the original authorization request error event. */
     constructor(
         session: BaseSessionWithTransactionAct,
         event: AuthRequestErrorEvent
@@ -40,10 +55,7 @@ class AuthorizationRequestedError(
         authRequestRetriedData = null,
         updatedAt = event.timestamp)
 
-    /**
-     * Constructor used to create an instance of AuthorizationRequestedError from a
-     * BaseSessionWithTransactionAct and an AuthRequestRetriedEvent.
-     */
+    /** Creates an updated error state from a retry event while retaining the original error. */
     constructor(
         session: BaseSessionWithAuthError,
         event: AuthRequestRetriedEvent

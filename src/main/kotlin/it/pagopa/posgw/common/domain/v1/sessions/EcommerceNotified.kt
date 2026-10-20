@@ -6,6 +6,17 @@ import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithCiNotified
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithEcommNotified
 import java.time.Instant
 
+/**
+ * Session state reached after the eCommerce notification succeeds.
+ *
+ * **Created from:** [CiNotified], [EcommerceNotifyError], or [EcommerceNotifyExpired] via
+ * [EcommNotifyEvent].
+ *
+ * **Transitions:** None; later events leave this state unchanged.
+ *
+ * @param sessionWithCiNotified creditor-institution-notified state retained by this state
+ * @param updatedAt time of the eCommerce notification event
+ */
 class EcommerceNotified(sessionWithCiNotified: BaseSessionWithCiNotified, updatedAt: Instant) :
     Session, BaseSessionWithEcommNotified(sessionWithCiNotified, updatedAt = updatedAt) {
 

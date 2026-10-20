@@ -9,6 +9,19 @@ import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithAuthReq
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithTransactionAct
 import java.time.Instant
 
+/**
+ * Session state while an authorization request is awaiting its outcome.
+ *
+ * **Created from:** [TransactionActivated] or [AuthorizationRequestedError] via [AuthRequestedEvent].
+ *
+ * **Transitions:**
+ * - [AuthorizationCompleted] via [AuthOutcomeReceivedEvent]
+ * - [ExpiredToReconcile] via [ExpiredEvent]
+ *
+ * @param sessionWithTransactionAct state from which authorization was requested
+ * @param authorizationRequestData data sent with the authorization request
+ * @param updatedAt time of the latest session event
+ */
 class AuthorizationRequested(
     sessionWithTransactionAct: BaseSessionWithTransactionAct,
     authorizationRequestData: AuthRequestedData,
