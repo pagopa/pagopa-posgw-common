@@ -12,7 +12,8 @@ import java.time.Instant
 /**
  * Session state while an authorization request is awaiting its outcome.
  *
- * **Created from:** [TransactionActivated] or [AuthorizationRequestedError] via [AuthRequestedEvent].
+ * **Created from:** [TransactionActivated] or [AuthorizationRequestedError] via
+ * [AuthRequestedEvent].
  *
  * **Transitions:**
  * - [AuthorizationCompleted] via [AuthOutcomeReceivedEvent]
