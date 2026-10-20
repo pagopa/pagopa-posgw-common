@@ -13,4 +13,6 @@ abstract class BaseSessionWithTransactionAct(
         sessionId = initializedSession.sessionId,
         createdAt = initializedSession.createdAt,
         correlationId = initializedSession.correlationId,
-        updatedAt = updatedAt) {}
+        updatedAt = updatedAt) {
+    val sessionBeforeTransactionAct: BaseSessionInitialized = initializedSession
+}

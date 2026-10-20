@@ -11,4 +11,6 @@ abstract class BaseSessionWithAuthReq(
     BaseSessionWithTransactionAct(
         sessionWithTransactionAct,
         transactionActivateData = sessionWithTransactionAct.transactionActivateData,
-        updatedAt = updatedAt)
+        updatedAt = updatedAt) {
+    val sessionBeforeAuthReq: BaseSessionWithTransactionAct = sessionWithTransactionAct
+}

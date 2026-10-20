@@ -60,7 +60,6 @@ dependencies {
   implementation("io.projectreactor.netty:reactor-netty")
   implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
   testImplementation("io.projectreactor:reactor-test")

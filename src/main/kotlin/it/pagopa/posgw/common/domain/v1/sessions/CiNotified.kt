@@ -14,7 +14,6 @@ class CiNotified(
 ) : Session, BaseSessionWithCiNotified(sessionWithAuthComp, updatedAt = updatedAt) {
 
     override val status: SessionStatus = SessionStatus.CI_NOTIFIED
-    val sessionBeforeCiNtf: BaseSessionWithAuthComp = sessionWithAuthComp
 
     constructor(
         session: BaseSessionWithAuthComp,

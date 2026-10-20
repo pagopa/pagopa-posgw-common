@@ -23,7 +23,6 @@ class TransactionActivated(
         updatedAt = updatedAt) {
 
     override val status: SessionStatus = SessionStatus.TRANSACTION_ACTIVATED
-    val sessionBeforeTransAct: BaseSessionInitialized = initializedSession
 
     constructor(
         session: BaseSessionInitialized,

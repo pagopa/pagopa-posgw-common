@@ -18,7 +18,6 @@ class ExpiredToReconcile(
     BaseSessionExpiredToReconcile(sessionWithTransactionAct, data = expiredData, updatedAt) {
 
     override val status: SessionStatus = SessionStatus.EXPIRED_TO_RECONCILE
-    val sessionBeforeExpRecon: BaseSessionWithTransactionAct = sessionWithTransactionAct
 
     constructor(
         session: BaseSessionWithTransactionAct,

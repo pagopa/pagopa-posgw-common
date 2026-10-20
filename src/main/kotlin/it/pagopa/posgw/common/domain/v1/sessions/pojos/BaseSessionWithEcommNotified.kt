@@ -5,4 +5,6 @@ import java.time.Instant
 abstract class BaseSessionWithEcommNotified(
     sessionWithCiNotified: BaseSessionWithCiNotified,
     updatedAt: Instant
-) : BaseSessionWithCiNotified(sessionWithAuthComp = sessionWithCiNotified, updatedAt = updatedAt)
+) : BaseSessionWithCiNotified(sessionWithAuthComp = sessionWithCiNotified, updatedAt = updatedAt) {
+    val sessionBeforeEcommNtf: BaseSessionWithCiNotified = sessionWithCiNotified
+}

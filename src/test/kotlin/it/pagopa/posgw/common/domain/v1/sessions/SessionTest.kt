@@ -39,6 +39,8 @@ import it.pagopa.posgw.common.domain.v1.ChannelId
 import it.pagopa.posgw.common.domain.v1.CorrelationId
 import it.pagopa.posgw.common.domain.v1.Psp
 import it.pagopa.posgw.common.domain.v1.SessionId
+import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionInitialized
+import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithTransactionAct
 import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -85,6 +87,7 @@ class SessionTest {
 
         val errorEvent = errorEvent(SessionStatus.INITIALIZED)
         val errorState = assertIs<Error>(initialized.applyEvent(errorEvent))
+        assertSame(initialized, errorState.sessionBeforeError)
         assertEquals(SessionStatus.ERROR, errorState.status)
         assertEquals(errorEvent.data, errorState.data)
         assertEquals(errorEvent.timestamp, errorState.updatedAt)
@@ -93,6 +96,7 @@ class SessionTest {
 
         val expiredEvent = expiredEvent(SessionStatus.INITIALIZED)
         val expiredState = assertIs<Expired>(initialized.applyEvent(expiredEvent))
+        assertSame(initialized, expiredState.sessionBeforeExpired)
         assertEquals(SessionStatus.EXPIRED, expiredState.status)
         assertEquals(expiredEvent.data, expiredState.data)
         assertEquals(expiredEvent.timestamp, expiredState.updatedAt)
@@ -111,30 +115,36 @@ class SessionTest {
     }
 
     @Test
-    fun `debt position created session activates transaction and handles error or expiration`() {
-        val debtState = debtPositionCreatedState()
-
+    fun `transaction activated from debt position retains previous state and data`() {
+        val debtEvent = debtPositionCreatedEvent()
+        val debtState = assertIs<DebtPositionCreated>(initializedState().applyEvent(debtEvent))
         val transactionEvent = transactionActivatedEvent()
         val transactionState =
             assertIs<TransactionActivated>(debtState.applyEvent(transactionEvent))
         assertEquals(SessionStatus.TRANSACTION_ACTIVATED, transactionState.status)
         assertEquals(transactionEvent.data, transactionState.transactionActivateData)
-        assertSame(debtState, transactionState.sessionBeforeTransAct)
-        assertEquals(
-            debtState.debtPositionData,
-            assertIs<DebtPositionCreated>(transactionState.sessionBeforeTransAct).debtPositionData,
-        )
+        assertSame(debtState, transactionState.sessionBeforeTransactionAct)
+        val previousState =
+            assertIs<DebtPositionCreated>(transactionState.sessionBeforeTransactionAct)
+        assertEquals(debtEvent.data, previousState.debtPositionData)
         assertEquals(debtState.sessionId, transactionState.sessionId)
         assertEquals(debtState.createdAt, transactionState.createdAt)
         assertEquals(transactionEvent.timestamp, transactionState.updatedAt)
+    }
+
+    @Test
+    fun `debt position created session handles error or expiration and ignores other events`() {
+        val debtState = debtPositionCreatedState()
 
         val errorEvent = errorEvent(SessionStatus.DEBT_POSITION_CREATED)
         val errorState = assertIs<Error>(debtState.applyEvent(errorEvent))
+        assertSame(debtState, errorState.sessionBeforeError)
         assertEquals(errorEvent.data, errorState.data)
         assertEquals(errorEvent.timestamp, errorState.updatedAt)
 
         val expiredEvent = expiredEvent(SessionStatus.DEBT_POSITION_CREATED)
         val expiredState = assertIs<Expired>(debtState.applyEvent(expiredEvent))
+        assertSame(debtState, expiredState.sessionBeforeExpired)
         assertEquals(expiredEvent.data, expiredState.data)
         assertEquals(expiredEvent.timestamp, expiredState.updatedAt)
 
@@ -145,11 +155,12 @@ class SessionTest {
     @Test
     fun `transaction activated session accepts authorization and terminal events`() {
         val transactionState = transactionActivatedState()
-        assertIs<Initialized>(transactionState.sessionBeforeTransAct)
+        assertIs<Initialized>(transactionState.sessionBeforeTransactionAct)
 
         val requestedEvent = authRequestedEvent()
         val requestedState =
             assertIs<AuthorizationRequested>(transactionState.applyEvent(requestedEvent))
+        assertPreviousSession(requestedState, transactionState)
         assertEquals(SessionStatus.AUTH_REQUESTED, requestedState.status)
         assertEquals(requestedEvent.data, requestedState.authorizationRequestData)
         assertEquals(requestedEvent.timestamp, requestedState.updatedAt)
@@ -159,6 +170,7 @@ class SessionTest {
         val requestErrorEvent = authRequestErrorEvent()
         val requestErrorState =
             assertIs<AuthorizationRequestedError>(transactionState.applyEvent(requestErrorEvent))
+        assertPreviousSession(requestErrorState, transactionState)
         assertEquals(SessionStatus.AUTH_REQUEST_ERROR, requestErrorState.status)
         assertEquals(requestErrorEvent.timestamp, requestErrorState.updatedAt)
         assertEquals(
@@ -166,10 +178,12 @@ class SessionTest {
 
         val errorEvent = errorEvent(SessionStatus.TRANSACTION_ACTIVATED)
         val errorState = assertIs<Error>(transactionState.applyEvent(errorEvent))
+        assertSame(transactionState, errorState.sessionBeforeError)
         assertEquals(errorEvent.data, errorState.data)
 
         val expiredEvent = expiredEvent(SessionStatus.TRANSACTION_ACTIVATED)
         val expiredState = assertIs<Expired>(transactionState.applyEvent(expiredEvent))
+        assertSame(transactionState, expiredState.sessionBeforeExpired)
         assertEquals(expiredEvent.data, expiredState.data)
 
         assertSame(transactionState, transactionState.applyEvent(transactionActivatedEvent()))
@@ -183,6 +197,7 @@ class SessionTest {
         val authorizedEvent = authOutcomeReceivedEvent("AUTHORIZED")
         val completedState =
             assertIs<AuthorizationCompleted>(requestedState.applyEvent(authorizedEvent))
+        assertPreviousSession(completedState, requestedState)
         assertEquals(SessionStatus.AUTH_COMPLETED, completedState.status)
         assertEquals(authorizedEvent.data, completedState.authorizationData)
         assertEquals(authorizedEvent.timestamp, completedState.updatedAt)
@@ -198,6 +213,7 @@ class SessionTest {
         val expiredEvent = expiredEvent(SessionStatus.AUTH_REQUESTED)
         val expiredToReconcile =
             assertIs<ExpiredToReconcile>(requestedState.applyEvent(expiredEvent))
+        assertPreviousSession(expiredToReconcile, requestedState)
         assertEquals(SessionStatus.EXPIRED_TO_RECONCILE, expiredToReconcile.status)
         assertEquals(expiredEvent.data, expiredToReconcile.data)
         assertEquals(expiredEvent.timestamp, expiredToReconcile.updatedAt)
@@ -215,12 +231,14 @@ class SessionTest {
         val requestedEvent = authRequestedEvent()
         val requestedState =
             assertIs<AuthorizationRequested>(requestErrorState.applyEvent(requestedEvent))
+        assertPreviousSession(requestedState, requestErrorState)
         assertEquals(requestedEvent.data, requestedState.authorizationRequestData)
         assertEquals(requestedEvent.timestamp, requestedState.updatedAt)
 
         val retriedEvent = authRequestRetriedEvent()
         val retriedState =
             assertIs<AuthorizationRequestedError>(requestErrorState.applyEvent(retriedEvent))
+        assertPreviousSession(retriedState, requestErrorState)
         assertEquals(SessionStatus.AUTH_REQUEST_ERROR, retriedState.status)
         assertEquals(retriedEvent.timestamp, retriedState.updatedAt)
         assertEquals(
@@ -228,11 +246,13 @@ class SessionTest {
 
         val errorEvent = errorEvent(SessionStatus.AUTH_REQUEST_ERROR)
         val errorState = assertIs<Error>(requestErrorState.applyEvent(errorEvent))
+        assertSame(requestErrorState, errorState.sessionBeforeError)
         assertEquals(errorEvent.data, errorState.data)
 
         val expiredEvent = expiredEvent(SessionStatus.AUTH_REQUEST_ERROR)
         val expiredToReconcile =
             assertIs<ExpiredToReconcile>(requestErrorState.applyEvent(expiredEvent))
+        assertPreviousSession(expiredToReconcile, requestErrorState)
         assertEquals(expiredEvent.data, expiredToReconcile.data)
         assertEquals(expiredEvent.timestamp, expiredToReconcile.updatedAt)
 
@@ -245,12 +265,14 @@ class SessionTest {
 
         val notifiedEvent = CiNotifiedEvent(SESSION_UUID)
         val notifiedState = assertIs<CiNotified>(completedState.applyEvent(notifiedEvent))
+        assertPreviousSession(notifiedState, completedState)
         assertEquals(SessionStatus.CI_NOTIFIED, notifiedState.status)
         assertEquals(notifiedEvent.timestamp, notifiedState.updatedAt)
         assertEquals(completedState.authorizationData, notifiedState.authorizationData)
 
         val errorEvent = ciNtfErrorEvent()
         val errorState = assertIs<CiNotifyError>(completedState.applyEvent(errorEvent))
+        assertPreviousSession(errorState, completedState)
         assertEquals(SessionStatus.CI_NTF_ERROR, errorState.status)
         assertEquals(errorEvent.data, errorState.ciNtfErrorData)
         assertNull(errorState.ciNtfRetriedData)
@@ -265,10 +287,12 @@ class SessionTest {
 
         val notifiedEvent = CiNotifiedEvent(SESSION_UUID)
         val notifiedState = assertIs<CiNotified>(errorState.applyEvent(notifiedEvent))
+        assertPreviousSession(notifiedState, errorState)
         assertEquals(notifiedEvent.timestamp, notifiedState.updatedAt)
 
         val retriedEvent = ciNtfRetriedEvent()
         val retriedState = assertIs<CiNotifyError>(errorState.applyEvent(retriedEvent))
+        assertPreviousSession(retriedState, errorState)
         assertEquals(SessionStatus.CI_NTF_ERROR, retriedState.status)
         assertEquals(errorState.ciNtfErrorData, retriedState.ciNtfErrorData)
         assertEquals(retriedEvent.data, retriedState.ciNtfRetriedData)
@@ -276,6 +300,7 @@ class SessionTest {
 
         val expiredEvent = CiNotifyExpiredEvent(SESSION_UUID)
         val expiredState = assertIs<CiNotifyExpired>(errorState.applyEvent(expiredEvent))
+        assertPreviousSession(expiredState, errorState)
         assertEquals(SessionStatus.CI_NTF_EXPIRED, expiredState.status)
         assertEquals(errorState.ciNtfErrorData, expiredState.ciNtfErrorData)
         assertNull(expiredState.ciExpRetriedData)
@@ -290,16 +315,19 @@ class SessionTest {
 
         val notifiedEvent = CiNotifiedEvent(SESSION_UUID)
         val notifiedState = assertIs<CiNotified>(expiredState.applyEvent(notifiedEvent))
+        assertPreviousSession(notifiedState, expiredState)
         assertEquals(notifiedEvent.timestamp, notifiedState.updatedAt)
 
         val retriedEvent = ciNtfRetriedEvent()
         val retriedState = assertIs<CiNotifyExpired>(expiredState.applyEvent(retriedEvent))
+        assertPreviousSession(retriedState, expiredState)
         assertEquals(retriedEvent.data, retriedState.ciExpRetriedData)
         assertEquals(retriedEvent.timestamp, retriedState.updatedAt)
 
         val sessionExpiredEvent = expiredEvent(SessionStatus.CI_NTF_EXPIRED)
         val expiredToReconcile =
             assertIs<ExpiredToReconcile>(expiredState.applyEvent(sessionExpiredEvent))
+        assertPreviousSession(expiredToReconcile, expiredState)
         assertEquals(sessionExpiredEvent.data, expiredToReconcile.data)
         assertEquals(sessionExpiredEvent.timestamp, expiredToReconcile.updatedAt)
 
@@ -312,12 +340,14 @@ class SessionTest {
 
         val notifiedEvent = ecommNotifyEvent()
         val notifiedState = assertIs<EcommerceNotified>(ciNotifiedState.applyEvent(notifiedEvent))
+        assertPreviousSession(notifiedState, ciNotifiedState)
         assertEquals(SessionStatus.ECOMM_NOTIFIED, notifiedState.status)
         assertEquals(notifiedEvent.timestamp, notifiedState.updatedAt)
         assertEquals(ciNotifiedState.authorizationData, notifiedState.authorizationData)
 
         val errorEvent = ecommNtfErrorEvent()
         val errorState = assertIs<EcommerceNotifyError>(ciNotifiedState.applyEvent(errorEvent))
+        assertPreviousSession(errorState, ciNotifiedState)
         assertEquals(SessionStatus.ECOMM_NTF_ERROR, errorState.status)
         assertEquals(errorEvent.data, errorState.ecommNotifyErrorData)
         assertNull(errorState.ecommNotifyRetriedData)
@@ -332,10 +362,12 @@ class SessionTest {
 
         val notifiedEvent = ecommNotifyEvent()
         val notifiedState = assertIs<EcommerceNotified>(errorState.applyEvent(notifiedEvent))
+        assertPreviousSession(notifiedState, errorState)
         assertEquals(notifiedEvent.timestamp, notifiedState.updatedAt)
 
         val retriedEvent = ecommNtfRetriedEvent()
         val retriedState = assertIs<EcommerceNotifyError>(errorState.applyEvent(retriedEvent))
+        assertPreviousSession(retriedState, errorState)
         assertEquals(SessionStatus.ECOMM_NTF_ERROR, retriedState.status)
         assertEquals(errorState.ecommNotifyErrorData, retriedState.ecommNotifyErrorData)
         assertEquals(retriedEvent.data, retriedState.ecommNotifyRetriedData)
@@ -343,6 +375,7 @@ class SessionTest {
 
         val expiredEvent = EcommNtfExpiredEvent(SESSION_UUID)
         val expiredState = assertIs<EcommerceNotifyExpired>(errorState.applyEvent(expiredEvent))
+        assertPreviousSession(expiredState, errorState)
         assertEquals(SessionStatus.ECOMM_NTF_EXPIRED, expiredState.status)
         assertEquals(errorState.ecommNotifyErrorData, expiredState.ecommNotifyErrorData)
         assertNull(expiredState.ecommNtfExpiredRetriedData)
@@ -357,10 +390,12 @@ class SessionTest {
 
         val notifiedEvent = ecommNotifyEvent()
         val notifiedState = assertIs<EcommerceNotified>(expiredState.applyEvent(notifiedEvent))
+        assertPreviousSession(notifiedState, expiredState)
         assertEquals(notifiedEvent.timestamp, notifiedState.updatedAt)
 
         val retriedEvent = ecommNtfRetriedEvent()
         val retriedState = assertIs<EcommerceNotifyExpired>(expiredState.applyEvent(retriedEvent))
+        assertPreviousSession(retriedState, expiredState)
         assertEquals(retriedEvent.data, retriedState.ecommNtfExpiredRetriedData)
         assertEquals(retriedEvent.timestamp, retriedState.updatedAt)
 
@@ -403,6 +438,7 @@ class SessionTest {
         assertEquals(event.timestamp, reconciled.updatedAt)
         assertEquals(state.data, reconciled.data)
         assertEquals(state.sessionId, reconciled.sessionId)
+        assertPreviousSession(reconciled, state)
 
         assertSame(state, state.applyEvent(authRequestedEvent()))
     }
@@ -455,6 +491,22 @@ class SessionTest {
                     finalSession.authorizationRequestData,
                 )
                 assertEquals(authorizationOutcomeEvent.data, finalSession.authorizationData)
+                val ciNotified = assertIs<CiNotified>(finalSession.sessionBeforeTransactionAct)
+                val authorizationCompleted =
+                    assertIs<AuthorizationCompleted>(ciNotified.sessionBeforeTransactionAct)
+                val authorizationRequested =
+                    assertIs<AuthorizationRequested>(
+                        authorizationCompleted.sessionBeforeTransactionAct,
+                    )
+                val transactionActivated =
+                    assertIs<TransactionActivated>(
+                        authorizationRequested.sessionBeforeTransactionAct,
+                    )
+                val debtPositionCreated =
+                    assertIs<DebtPositionCreated>(
+                        transactionActivated.sessionBeforeTransactionAct,
+                    )
+                assertEquals(debtEvent.data, debtPositionCreated.debtPositionData)
                 assertEquals(ecommerceNotifiedEvent.timestamp, finalSession.updatedAt)
             }
             .verifyComplete()
@@ -634,6 +686,13 @@ class SessionTest {
         assertIs<Reconciled>(
             expiredToReconcileState().applyEvent(ReconciledEvent(SESSION_UUID)),
         )
+
+    private fun assertPreviousSession(
+        actual: BaseSessionWithTransactionAct,
+        expected: BaseSessionInitialized,
+    ) {
+        assertSame(expected, actual.sessionBeforeTransactionAct)
+    }
 
     private companion object {
         val SESSION_UUID: UUID = UUID.fromString("a2f44c4e-b866-4d20-a5df-27c373194c5a")

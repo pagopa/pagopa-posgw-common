@@ -9,4 +9,6 @@ abstract class BaseSessionWithCiNotified(
     BaseSessionWithAuthComp(
         sessionWithAuthReq = sessionWithAuthComp,
         authorizationData = sessionWithAuthComp.authorizationData,
-        updatedAt = updatedAt)
+        updatedAt = updatedAt) {
+    val sessionBeforeCiNtf: BaseSessionWithAuthComp = sessionWithAuthComp
+}

@@ -11,4 +11,6 @@ abstract class BaseSessionExpiredToReconcile(
     BaseSessionWithTransactionAct(
         initializedSession = sessionWithTransactionAct,
         transactionActivateData = sessionWithTransactionAct.transactionActivateData,
-        updatedAt = updatedAt) {}
+        updatedAt = updatedAt) {
+    val sessionBeforeExpRecon: BaseSessionWithTransactionAct = sessionWithTransactionAct
+}
