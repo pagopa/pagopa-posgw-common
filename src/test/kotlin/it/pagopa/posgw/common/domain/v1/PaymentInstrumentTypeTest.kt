@@ -6,6 +6,6 @@ import kotlin.test.assertEquals
 class PaymentInstrumentTypeTest {
     @Test
     fun `maps instrument types to their external values`() {
-        assertEquals(listOf("CARD"), PaymentInstrumentType.entries.map { it.value })
+        assertEquals(listOf("CARD"), PaymentInstrumentType.entries.map { it.name })
     }
 }

@@ -7,4 +7,9 @@ import it.pagopa.posgw.common.annotation.ValueObject
  *
  * @param value IUPD identifier.
  */
-@ValueObject data class Iupd(val value: String)
+@ValueObject
+data class Iupd(val value: String) {
+    init {
+        require(value.isNotBlank()) { "IUPD cannot be blank" }
+    }
+}

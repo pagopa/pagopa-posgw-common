@@ -1,8 +1,23 @@
 package it.pagopa.posgw.common.domain.v1.sessions
 
-enum class SessionStatus(val status: String) {
-    IN_PROGRESS("IN_PROGRESS"),
-    COMPLETED("COMPLETED"),
-    ERROR("ERROR"),
-    EXPIRED("EXPIRED")
+enum class SessionStatus {
+    INITIALIZED,
+    DEBT_POSITION_CREATED,
+    TRANSACTION_ACTIVATED,
+    AUTH_REQUESTED,
+    AUTH_REQUEST_ERROR,
+    AUTH_COMPLETED,
+    CI_NTF_ERROR,
+    CI_NTF_EXPIRED,
+    CI_NOTIFIED,
+    RECONCILED,
+    ECOMM_NTF_ERROR,
+    ECOMM_NTF_EXPIRED,
+    ECOMM_NOTIFIED,
+    ERROR,
+    EXPIRED_TO_RECONCILE,
+    EXPIRED;
+
+    val status: String
+        get() = name
 }

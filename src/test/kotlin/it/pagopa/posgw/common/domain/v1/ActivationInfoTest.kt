@@ -13,13 +13,18 @@ class ActivationInfoTest {
                 paymentToken = PaymentToken("payment-token-123"),
                 rptId = rptId,
                 amount = 1200L,
-                outcome = Outcome.OK,
+                outcome = ActivationInfo.Outcome.OK,
             )
 
         assertEquals(PaymentToken("payment-token-123"), activationInfo.paymentToken)
         assertEquals(rptId, activationInfo.rptId)
         assertEquals(1200L, activationInfo.amount)
-        assertEquals(Outcome.OK, activationInfo.outcome)
+        assertEquals(ActivationInfo.Outcome.OK, activationInfo.outcome)
         assertNull(activationInfo.reason)
+    }
+
+    @Test
+    fun `exposes activation outcome names`() {
+        assertEquals(listOf("OK", "KO"), ActivationInfo.Outcome.entries.map { it.name })
     }
 }
