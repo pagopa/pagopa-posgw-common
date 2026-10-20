@@ -4,6 +4,12 @@ import it.pagopa.posgw.common.documents.v1.sessions.data.EcommNtfRetriedData
 import java.util.UUID
 import org.springframework.data.mongodb.core.mapping.Document
 
+/**
+ * Records a retry of a failed eCommerce notification.
+ *
+ * @param sessionId identifier of the session
+ * @param data retry count and error details
+ */
 @Document(collection = "eventstore")
 data class EcommNtfRetriedEvent(
     override val sessionId: UUID,
