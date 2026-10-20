@@ -90,6 +90,7 @@ class SessionTest {
         assertSame(initialized, errorState.sessionBeforeError)
         assertEquals(SessionStatus.ERROR, errorState.status)
         assertEquals(errorEvent.data, errorState.data)
+        assertEquals(errorEvent.data, errorState.errorData)
         assertEquals(errorEvent.timestamp, errorState.updatedAt)
         assertEquals(initialized.sessionId, errorState.sessionId)
         assertEquals(initialized.createdAt, errorState.createdAt)
@@ -99,6 +100,7 @@ class SessionTest {
         assertSame(initialized, expiredState.sessionBeforeExpired)
         assertEquals(SessionStatus.EXPIRED, expiredState.status)
         assertEquals(expiredEvent.data, expiredState.data)
+        assertEquals(expiredEvent.data, expiredState.expiredData)
         assertEquals(expiredEvent.timestamp, expiredState.updatedAt)
 
         assertSame(initialized, initialized.applyEvent(initializedEvent()))
@@ -163,6 +165,7 @@ class SessionTest {
         assertPreviousSession(requestedState, transactionState)
         assertEquals(SessionStatus.AUTH_REQUESTED, requestedState.status)
         assertEquals(requestedEvent.data, requestedState.authorizationRequestData)
+        assertSame(transactionState, requestedState.sessionBeforeAuthReq)
         assertEquals(requestedEvent.timestamp, requestedState.updatedAt)
         assertEquals(
             transactionState.transactionActivateData, requestedState.transactionActivateData)
@@ -214,6 +217,7 @@ class SessionTest {
         val expiredToReconcile =
             assertIs<ExpiredToReconcile>(requestedState.applyEvent(expiredEvent))
         assertPreviousSession(expiredToReconcile, requestedState)
+        assertSame(requestedState, expiredToReconcile.sessionBeforeExpRecon)
         assertEquals(SessionStatus.EXPIRED_TO_RECONCILE, expiredToReconcile.status)
         assertEquals(expiredEvent.data, expiredToReconcile.data)
         assertEquals(expiredEvent.timestamp, expiredToReconcile.updatedAt)
@@ -240,6 +244,7 @@ class SessionTest {
             assertIs<AuthorizationRequestedError>(requestErrorState.applyEvent(retriedEvent))
         assertPreviousSession(retriedState, requestErrorState)
         assertEquals(SessionStatus.AUTH_REQUEST_ERROR, retriedState.status)
+        assertEquals(retriedEvent.data, retriedState.authRequestRetriedData)
         assertEquals(retriedEvent.timestamp, retriedState.updatedAt)
         assertEquals(
             requestErrorState.transactionActivateData, retriedState.transactionActivateData)
@@ -266,6 +271,7 @@ class SessionTest {
         val notifiedEvent = CiNotifiedEvent(SESSION_UUID)
         val notifiedState = assertIs<CiNotified>(completedState.applyEvent(notifiedEvent))
         assertPreviousSession(notifiedState, completedState)
+        assertSame(completedState, notifiedState.sessionBeforeCiNtf)
         assertEquals(SessionStatus.CI_NOTIFIED, notifiedState.status)
         assertEquals(notifiedEvent.timestamp, notifiedState.updatedAt)
         assertEquals(completedState.authorizationData, notifiedState.authorizationData)
@@ -341,6 +347,7 @@ class SessionTest {
         val notifiedEvent = ecommNotifyEvent()
         val notifiedState = assertIs<EcommerceNotified>(ciNotifiedState.applyEvent(notifiedEvent))
         assertPreviousSession(notifiedState, ciNotifiedState)
+        assertSame(ciNotifiedState, notifiedState.sessionBeforeEcommNtf)
         assertEquals(SessionStatus.ECOMM_NOTIFIED, notifiedState.status)
         assertEquals(notifiedEvent.timestamp, notifiedState.updatedAt)
         assertEquals(ciNotifiedState.authorizationData, notifiedState.authorizationData)
