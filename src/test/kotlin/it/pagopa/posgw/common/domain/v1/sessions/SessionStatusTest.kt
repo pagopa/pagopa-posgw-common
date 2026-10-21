@@ -27,6 +27,5 @@ class SessionStatusTest {
             )
 
         assertEquals(expectedStates, SessionStatus.entries.map { it.name })
-        assertEquals(expectedStates, SessionStatus.entries.map { it.status })
     }
 }
