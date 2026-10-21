@@ -9,7 +9,6 @@ import it.pagopa.posgw.common.documents.v1.sessions.events.EcommNtfRetriedEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithCiNotified
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithEcommNtfError
-import java.time.Instant
 
 /**
  * Session state representing a failed eCommerce notification.
@@ -26,19 +25,23 @@ import java.time.Instant
  * - [EcommerceNotifyExpired] via [EcommNtfExpiredEvent]
  *
  * @param sessionWithCiNotified creditor-institution-notified state retained by this state
+ * @param sourceEvent event that created or updated this error state
  * @param ecommNotifyErrorData data describing the notification failure
  * @param ecommNotifyRetriedData latest retry data, or `null` before a retry
- * @param updatedAt time of the latest session event
  */
-class EcommerceNotifyError(
+class EcommerceNotifyError
+private constructor(
     sessionWithCiNotified: BaseSessionWithCiNotified,
+    sourceEvent: SessionEvent<*>,
     ecommNotifyErrorData: EcommNtfErrorData,
-    ecommNotifyRetriedData: EcommNtfRetriedData? = null,
-    updatedAt: Instant
+    ecommNotifyRetriedData: EcommNtfRetriedData?
 ) :
     Session,
     BaseSessionWithEcommNtfError(
-        sessionWithCiNotified, ecommNotifyErrorData, ecommNotifyRetriedData, updatedAt) {
+        sessionWithCiNotified,
+        ecommNotifyErrorData,
+        ecommNotifyRetriedData,
+        sourceEvent.timestamp) {
 
     override val status: SessionStatus = SessionStatus.ECOMM_NTF_ERROR
 
@@ -47,17 +50,18 @@ class EcommerceNotifyError(
         event: EcommNtfErrorEvent
     ) : this(
         sessionWithCiNotified = session,
+        sourceEvent = event,
         ecommNotifyErrorData = event.data,
-        updatedAt = event.timestamp)
+        ecommNotifyRetriedData = null)
 
     constructor(
         session: BaseSessionWithEcommNtfError,
         event: EcommNtfRetriedEvent
     ) : this(
         sessionWithCiNotified = session,
+        sourceEvent = event,
         ecommNotifyErrorData = session.ecommNotifyErrorData,
-        ecommNotifyRetriedData = event.data,
-        updatedAt = event.timestamp)
+        ecommNotifyRetriedData = event.data)
 
     override fun applyEvent(event: SessionEvent<*>): Session =
         when (event) {

@@ -10,7 +10,6 @@ import it.pagopa.posgw.common.documents.v1.sessions.events.ExpiredEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithAuthError
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithTransactionAct
-import java.time.Instant
 
 /**
  * Session state representing a failed authorization request and any subsequent retry.
@@ -25,23 +24,24 @@ import java.time.Instant
  * - [Error] via [ErrorEvent]
  * - [ExpiredToReconcile] via [ExpiredEvent]
  *
- * @param sessionWithTransactionAct state from which authorization was requested
+ * @param sessionWithTransactionAct transaction state retained by this error state
+ * @param sourceEvent event that created or updated this error state
  * @param authRequestErrorData data describing the request failure
  * @param authRequestRetriedData latest retry data, or `null` before a retry
- * @param updatedAt time of the latest session event
  */
-class AuthorizationRequestedError(
+class AuthorizationRequestedError
+private constructor(
     sessionWithTransactionAct: BaseSessionWithTransactionAct,
+    sourceEvent: SessionEvent<*>,
     authRequestErrorData: AuthRequestErrorData,
     authRequestRetriedData: AuthRequestRetriedData?,
-    updatedAt: Instant,
 ) :
     Session,
     BaseSessionWithAuthError(
         sessionWithTransactionAct = sessionWithTransactionAct,
         authRequestErrorData = authRequestErrorData,
         authRequestRetriedData = authRequestRetriedData,
-        updatedAt = updatedAt) {
+        updatedAt = sourceEvent.timestamp) {
 
     override val status: SessionStatus = SessionStatus.AUTH_REQUEST_ERROR
 
@@ -51,9 +51,9 @@ class AuthorizationRequestedError(
         event: AuthRequestErrorEvent
     ) : this(
         sessionWithTransactionAct = session,
+        sourceEvent = event,
         authRequestErrorData = event.data,
-        authRequestRetriedData = null,
-        updatedAt = event.timestamp)
+        authRequestRetriedData = null)
 
     /** Creates an updated error state from a retry event while retaining the original error. */
     constructor(
@@ -61,9 +61,9 @@ class AuthorizationRequestedError(
         event: AuthRequestRetriedEvent
     ) : this(
         sessionWithTransactionAct = session,
+        sourceEvent = event,
         authRequestErrorData = session.authRequestErrorData,
-        authRequestRetriedData = event.data,
-        updatedAt = event.timestamp)
+        authRequestRetriedData = event.data)
 
     override fun applyEvent(event: SessionEvent<*>): Session =
         when (event) {

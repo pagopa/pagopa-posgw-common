@@ -9,7 +9,6 @@ import it.pagopa.posgw.common.documents.v1.sessions.events.CiNtfRetriedEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithAuthComp
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithCiNtfError
-import java.time.Instant
 
 /**
  * Session state representing a failed creditor-institution notification.
@@ -26,18 +25,20 @@ import java.time.Instant
  * - [CiNotifyExpired] via [CiNotifyExpiredEvent]
  *
  * @param sessionWithAuthComp authorization-completed state retained by this state
+ * @param sourceEvent event that created or updated this error state
  * @param ciNtfErrorData data describing the notification failure
  * @param ciNtfRetriedData latest retry data, or `null` before a retry
- * @param updatedAt time of the latest session event
  */
-class CiNotifyError(
+class CiNotifyError
+private constructor(
     sessionWithAuthComp: BaseSessionWithAuthComp,
+    sourceEvent: SessionEvent<*>,
     ciNtfErrorData: CiNtfErrorData,
-    ciNtfRetriedData: CiNtfRetriedData? = null,
-    updatedAt: Instant
+    ciNtfRetriedData: CiNtfRetriedData?
 ) :
     Session,
-    BaseSessionWithCiNtfError(sessionWithAuthComp, ciNtfErrorData, ciNtfRetriedData, updatedAt) {
+    BaseSessionWithCiNtfError(
+        sessionWithAuthComp, ciNtfErrorData, ciNtfRetriedData, sourceEvent.timestamp) {
 
     override val status: SessionStatus = SessionStatus.CI_NTF_ERROR
 
@@ -45,16 +46,19 @@ class CiNotifyError(
         session: BaseSessionWithAuthComp,
         event: CiNtfErrorEvent
     ) : this(
-        sessionWithAuthComp = session, ciNtfErrorData = event.data, updatedAt = event.timestamp)
+        sessionWithAuthComp = session,
+        sourceEvent = event,
+        ciNtfErrorData = event.data,
+        ciNtfRetriedData = null)
 
     constructor(
         session: BaseSessionWithCiNtfError,
         event: CiNtfRetriedEvent
     ) : this(
         sessionWithAuthComp = session,
+        sourceEvent = event,
         ciNtfErrorData = session.ciNtfErrorData,
-        ciNtfRetriedData = event.data,
-        updatedAt = event.timestamp)
+        ciNtfRetriedData = event.data)
 
     override fun applyEvent(event: SessionEvent<*>): Session {
         return when (event) {

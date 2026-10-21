@@ -1,6 +1,5 @@
 package it.pagopa.posgw.common.domain.v1.sessions
 
-import it.pagopa.posgw.common.documents.v1.sessions.data.DebtPositionCreatedData
 import it.pagopa.posgw.common.documents.v1.sessions.events.DeptPositionCreatedEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.ErrorEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.ExpiredEvent
@@ -8,7 +7,6 @@ import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.TransactionActivatedEvent
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionInitialized
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithDebtPos
-import java.time.Instant
 
 /**
  * Session state reached after a debt position is created.
@@ -22,28 +20,15 @@ import java.time.Instant
  * - [Error] via [ErrorEvent]
  * - [Expired] via [ExpiredEvent]
  *
- * @param sessionInitialized initialized state from which the debt position was created
- * @param debtPositionData created debt-position data
- * @param updatedAt time of the debt-position-created event
+ * @param session initialized state from which the debt position was created
+ * @param event debt-position-created event
  */
-class DebtPositionCreated(
-    sessionInitialized: BaseSessionInitialized,
-    debtPositionData: DebtPositionCreatedData,
-    updatedAt: Instant
-) :
+class DebtPositionCreated(session: BaseSessionInitialized, event: DeptPositionCreatedEvent) :
     Session,
     BaseSessionWithDebtPos(
-        sessionInitialized = sessionInitialized,
-        updatedAt = updatedAt,
-        debtPositionData = debtPositionData) {
+        sessionInitialized = session, updatedAt = event.timestamp, debtPositionData = event.data) {
 
     override val status: SessionStatus = SessionStatus.DEBT_POSITION_CREATED
-
-    constructor(
-        session: BaseSessionInitialized,
-        event: DeptPositionCreatedEvent
-    ) : this(
-        sessionInitialized = session, updatedAt = event.timestamp, debtPositionData = event.data)
 
     override fun applyEvent(event: SessionEvent<*>): Session =
         when (event) {

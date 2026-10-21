@@ -1,6 +1,5 @@
 package it.pagopa.posgw.common.domain.v1.sessions
 
-import it.pagopa.posgw.common.documents.v1.sessions.data.SessionInitializedData
 import it.pagopa.posgw.common.documents.v1.sessions.events.DeptPositionCreatedEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.ErrorEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.ExpiredEvent
@@ -10,7 +9,6 @@ import it.pagopa.posgw.common.documents.v1.sessions.events.TransactionActivatedE
 import it.pagopa.posgw.common.domain.v1.CorrelationId
 import it.pagopa.posgw.common.domain.v1.SessionId
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionInitialized
-import java.time.Instant
 
 /**
  * Session state created from the initialization event.
@@ -23,29 +21,21 @@ import java.time.Instant
  * - [Error] via [ErrorEvent]
  * - [Expired] via [ExpiredEvent]
  *
- * @param sessionId identifier assigned to the session
- * @param correlationId identifier used to correlate related operations
- * @param createdAt time the session was initialized
- * @param initializeData initialization data retained by subsequent states
+ * @param session empty state receiving the initialization event
+ * @param event session initialization event
  */
-class Initialized(
-    sessionId: SessionId,
-    correlationId: CorrelationId,
-    createdAt: Instant,
-    initializeData: SessionInitializedData
-) :
+class Initialized(session: EmptySession, event: SessionInitializedEvent) :
     Session,
-    BaseSessionInitialized(initializeData, sessionId, createdAt, correlationId, createdAt) {
+    BaseSessionInitialized(
+        initializeData = event.data,
+        sessionId = SessionId(event.sessionId),
+        createdAt = event.timestamp,
+        correlationId = CorrelationId.of(event.data.correlationId),
+        updatedAt = event.timestamp) {
 
     override val status: SessionStatus = SessionStatus.INITIALIZED
 
-    constructor(
-        event: SessionInitializedEvent
-    ) : this(
-        SessionId(event.sessionId),
-        CorrelationId.of(event.data.correlationId),
-        event.timestamp,
-        event.data)
+    constructor(event: SessionInitializedEvent) : this(EmptySession(), event)
 
     override fun applyEvent(event: SessionEvent<*>): Session =
         when (event) {

@@ -4,7 +4,6 @@ import it.pagopa.posgw.common.documents.v1.sessions.events.EcommNotifyEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithCiNotified
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithEcommNotified
-import java.time.Instant
 
 /**
  * Session state reached after the eCommerce notification succeeds.
@@ -14,18 +13,13 @@ import java.time.Instant
  *
  * **Transitions:** None; later events leave this state unchanged.
  *
- * @param sessionWithCiNotified creditor-institution-notified state retained by this state
- * @param updatedAt time of the eCommerce notification event
+ * @param session creditor-institution-notified state retained by this state
+ * @param event successful eCommerce notification event
  */
-class EcommerceNotified(sessionWithCiNotified: BaseSessionWithCiNotified, updatedAt: Instant) :
-    Session, BaseSessionWithEcommNotified(sessionWithCiNotified, updatedAt = updatedAt) {
+class EcommerceNotified(session: BaseSessionWithCiNotified, event: EcommNotifyEvent) :
+    Session, BaseSessionWithEcommNotified(session, updatedAt = event.timestamp) {
 
     override val status: SessionStatus = SessionStatus.ECOMM_NOTIFIED
-
-    constructor(
-        session: BaseSessionWithCiNotified,
-        event: EcommNotifyEvent
-    ) : this(sessionWithCiNotified = session, updatedAt = event.timestamp)
 
     override fun applyEvent(event: SessionEvent<*>): Session {
         return this

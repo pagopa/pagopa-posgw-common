@@ -1,6 +1,5 @@
 package it.pagopa.posgw.common.domain.v1.sessions
 
-import it.pagopa.posgw.common.documents.v1.sessions.data.TransactionActivatedData
 import it.pagopa.posgw.common.documents.v1.sessions.events.AuthRequestErrorEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.AuthRequestedEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.ErrorEvent
@@ -9,7 +8,6 @@ import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.TransactionActivatedEvent
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionInitialized
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithTransactionAct
-import java.time.Instant
 
 /**
  * Session state reached after transaction activation.
@@ -22,30 +20,17 @@ import java.time.Instant
  * - [Error] via [ErrorEvent]
  * - [Expired] via [ExpiredEvent]
  *
- * @param transactionActivatedData data returned by transaction activation
- * @param initializedSession initialized or debt-position-created predecessor state
- * @param updatedAt time of the transaction-activation event
+ * @param session initialized or debt-position-created predecessor state
+ * @param event transaction-activation event
  */
-class TransactionActivated(
-    transactionActivatedData: TransactionActivatedData,
-    initializedSession: BaseSessionInitialized,
-    updatedAt: Instant
-) :
+class TransactionActivated(session: BaseSessionInitialized, event: TransactionActivatedEvent) :
     Session,
     BaseSessionWithTransactionAct(
-        initializedSession = initializedSession,
-        transactionActivateData = transactionActivatedData,
-        updatedAt = updatedAt) {
+        initializedSession = session,
+        transactionActivateData = event.data,
+        updatedAt = event.timestamp) {
 
     override val status: SessionStatus = SessionStatus.TRANSACTION_ACTIVATED
-
-    constructor(
-        session: BaseSessionInitialized,
-        event: TransactionActivatedEvent
-    ) : this(
-        initializedSession = session,
-        transactionActivatedData = event.data,
-        updatedAt = event.timestamp)
 
     override fun applyEvent(event: SessionEvent<*>): Session =
         when (event) {

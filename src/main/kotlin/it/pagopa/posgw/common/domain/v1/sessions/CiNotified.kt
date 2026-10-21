@@ -6,7 +6,6 @@ import it.pagopa.posgw.common.documents.v1.sessions.events.EcommNtfErrorEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithAuthComp
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithCiNotified
-import java.time.Instant
 
 /**
  * Session state reached after the creditor institution has been notified.
@@ -20,20 +19,13 @@ import java.time.Instant
  * - [EcommerceNotified] via [EcommNotifyEvent]
  * - [EcommerceNotifyError] via [EcommNtfErrorEvent]
  *
- * @param sessionWithAuthComp authorization-completed state
- * @param updatedAt time of the creditor-institution notification event
+ * @param session authorization-completed state
+ * @param event creditor-institution notification event
  */
-class CiNotified(
-    sessionWithAuthComp: BaseSessionWithAuthComp,
-    updatedAt: Instant,
-) : Session, BaseSessionWithCiNotified(sessionWithAuthComp, updatedAt = updatedAt) {
+class CiNotified(session: BaseSessionWithAuthComp, event: CiNotifiedEvent) :
+    Session, BaseSessionWithCiNotified(session, updatedAt = event.timestamp) {
 
     override val status: SessionStatus = SessionStatus.CI_NOTIFIED
-
-    constructor(
-        session: BaseSessionWithAuthComp,
-        event: CiNotifiedEvent
-    ) : this(sessionWithAuthComp = session, updatedAt = event.timestamp)
 
     override fun applyEvent(event: SessionEvent<*>): Session =
         when (event) {

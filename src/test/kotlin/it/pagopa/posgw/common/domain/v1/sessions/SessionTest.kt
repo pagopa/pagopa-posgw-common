@@ -37,7 +37,6 @@ import it.pagopa.posgw.common.documents.v1.sessions.events.TransactionActivatedE
 import it.pagopa.posgw.common.domain.v1.BrokerId
 import it.pagopa.posgw.common.domain.v1.ChannelId
 import it.pagopa.posgw.common.domain.v1.CorrelationId
-import it.pagopa.posgw.common.domain.v1.Psp
 import it.pagopa.posgw.common.domain.v1.SessionId
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionInitialized
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithTransactionAct
@@ -524,7 +523,9 @@ class SessionTest {
             sessionId = SESSION_UUID,
             data =
                 SessionInitializedData(
-                    psp = Psp("psp-1", BrokerId("broker-1"), ChannelId("channel-1")),
+                    psp =
+                        SessionInitializedData.Psp(
+                            "psp-1", BrokerId("broker-1"), ChannelId("channel-1")),
                     creditorInstitution =
                         SessionInitializedData.CreditorInstitution(
                             "fiscal-code",
@@ -626,11 +627,11 @@ class SessionTest {
     private fun errorEvent(status: SessionStatus) =
         ErrorEvent(
             sessionId = SESSION_UUID,
-            data = ErrorData(status, "ERR-001", "session error"),
+            data = ErrorData(status.name, "ERR-001", "session error"),
         )
 
     private fun expiredEvent(status: SessionStatus) =
-        ExpiredEvent(sessionId = SESSION_UUID, data = ExpiredData(status))
+        ExpiredEvent(sessionId = SESSION_UUID, data = ExpiredData(status.name))
 
     private fun initializedState() =
         assertIs<Initialized>(EmptySession().applyEvent(initializedEvent()))

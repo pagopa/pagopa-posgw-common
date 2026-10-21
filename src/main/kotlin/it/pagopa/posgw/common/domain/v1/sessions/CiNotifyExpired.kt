@@ -8,7 +8,6 @@ import it.pagopa.posgw.common.documents.v1.sessions.events.ExpiredEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithCiNtfError
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithCiNtfExpired
-import java.time.Instant
 
 /**
  * Session state representing an expired creditor-institution notification.
@@ -23,27 +22,28 @@ import java.time.Instant
  * - [ExpiredToReconcile] via [ExpiredEvent]
  *
  * @param sessionWithCiNtfError failed notification state retained by this state
+ * @param sourceEvent event that created or updated this expired state
  * @param ciExpRetriedData retry data recorded after expiry, if any
- * @param updatedAt time of the latest session event
  */
-class CiNotifyExpired(
+class CiNotifyExpired
+private constructor(
     sessionWithCiNtfError: BaseSessionWithCiNtfError,
-    ciExpRetriedData: CiNtfRetriedData?,
-    updatedAt: Instant,
+    sourceEvent: SessionEvent<*>,
+    ciExpRetriedData: CiNtfRetriedData?
 ) :
     Session,
-    BaseSessionWithCiNtfExpired(sessionWithCiNtfError, ciExpRetriedData, updatedAt = updatedAt) {
+    BaseSessionWithCiNtfExpired(
+        sessionWithCiNtfError, ciExpRetriedData, updatedAt = sourceEvent.timestamp) {
 
     constructor(
         session: BaseSessionWithCiNtfError,
         event: CiNotifyExpiredEvent
-    ) : this(sessionWithCiNtfError = session, null, updatedAt = event.timestamp)
+    ) : this(sessionWithCiNtfError = session, sourceEvent = event, ciExpRetriedData = null)
 
     constructor(
         session: BaseSessionWithCiNtfExpired,
         event: CiNtfRetriedEvent
-    ) : this(
-        sessionWithCiNtfError = session, ciExpRetriedData = event.data, updatedAt = event.timestamp)
+    ) : this(sessionWithCiNtfError = session, sourceEvent = event, ciExpRetriedData = event.data)
 
     override val status: SessionStatus = SessionStatus.CI_NTF_EXPIRED
 

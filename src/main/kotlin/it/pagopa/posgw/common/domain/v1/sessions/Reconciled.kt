@@ -4,7 +4,6 @@ import it.pagopa.posgw.common.documents.v1.sessions.events.ReconciledEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionExpiredToReconcile
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionReconciled
-import java.time.Instant
 
 /**
  * Terminal session state reached after an expired transaction is reconciled.
@@ -13,17 +12,11 @@ import java.time.Instant
  *
  * **Transitions:** None; later events leave this state unchanged.
  *
- * @param sessionExpiredToReconcile expired state being reconciled
- * @param updatedAt time of the reconciliation event
+ * @param session expired state being reconciled
+ * @param event reconciliation event
  */
-class Reconciled(sessionExpiredToReconcile: BaseSessionExpiredToReconcile, updatedAt: Instant) :
-    Session,
-    BaseSessionReconciled(sessionToReconcile = sessionExpiredToReconcile, updatedAt = updatedAt) {
-
-    constructor(
-        sessionExpiredToReconcile: BaseSessionExpiredToReconcile,
-        event: ReconciledEvent
-    ) : this(sessionExpiredToReconcile = sessionExpiredToReconcile, updatedAt = event.timestamp)
+class Reconciled(session: BaseSessionExpiredToReconcile, event: ReconciledEvent) :
+    Session, BaseSessionReconciled(sessionToReconcile = session, updatedAt = event.timestamp) {
 
     override val status: SessionStatus = SessionStatus.RECONCILED
 

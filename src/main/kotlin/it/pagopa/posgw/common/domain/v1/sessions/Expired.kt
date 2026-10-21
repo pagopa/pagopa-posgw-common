@@ -5,7 +5,6 @@ import it.pagopa.posgw.common.documents.v1.sessions.events.ExpiredEvent
 import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionExpired
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionInitialized
-import java.time.Instant
 
 /**
  * Terminal session state created when a session expires without reconciliation.
@@ -15,27 +14,20 @@ import java.time.Instant
  *
  * **Transitions:** None; later events leave this state unchanged.
  *
- * @param initializedSession state that expired
- * @param updatedAt time of the expiry event
- * @param data expiry details
+ * @param session state that expired
+ * @param event expiry event
  */
-class Expired(
-    initializedSession: BaseSessionInitialized,
-    updatedAt: Instant,
-    val data: ExpiredData
-) :
+class Expired(session: BaseSessionInitialized, event: ExpiredEvent) :
     Session,
     BaseSessionExpired(
-        previewSession = initializedSession, expiredData = data, updatedAt = updatedAt) {
+        previewSession = session, expiredData = event.data, updatedAt = event.timestamp) {
 
     override val status: SessionStatus = SessionStatus.EXPIRED
-    /** State from which this expired state was created. */
-    val sessionBeforeExpired: BaseSessionInitialized = initializedSession
 
-    constructor(
-        session: BaseSessionInitialized,
-        event: ExpiredEvent
-    ) : this(initializedSession = session, updatedAt = event.timestamp, data = event.data)
+    val data: ExpiredData = event.data
+
+    /** State from which this expired state was created. */
+    val sessionBeforeExpired: BaseSessionInitialized = session
 
     override fun applyEvent(event: SessionEvent<*>): Session = this
 }
