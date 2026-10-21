@@ -16,8 +16,5 @@ enum class SessionStatus {
     ECOMM_NOTIFIED,
     ERROR,
     EXPIRED_TO_RECONCILE,
-    EXPIRED;
-
-    val status: String
-        get() = name
+    EXPIRED
 }
