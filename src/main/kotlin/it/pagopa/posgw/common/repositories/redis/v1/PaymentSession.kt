@@ -1,7 +1,9 @@
-package it.pagopa.posgw.common.documents.v1.sessions
+package it.pagopa.posgw.common.repositories.redis.v1
 
 import it.pagopa.posgw.common.domain.v1.sessions.SessionStatus
 import java.time.Instant
+import org.springframework.data.annotation.Id
+import org.springframework.data.redis.core.RedisHash
 
 /**
  * Represents a payment session used to track the transient and reactive state of a payment session
@@ -16,15 +18,16 @@ import java.time.Instant
  * @param lifecycle timestamps related to the lifecycle of the session
  * @param routing URLs used for routing notifications and requests related to the session
  */
+@RedisHash(value = "session")
 data class PaymentSession(
-    val sessionId: String,
+    @Id val sessionId: String,
     val status: SessionStatus,
     val correlationId: String,
     val integrationType: IntegrationType,
     val pos: Pos,
     val transaction: Transaction,
     val lifecycle: LifeCycle,
-    val routing: Rounting
+    val routing: Routing
 ) {
 
     enum class IntegrationType {
@@ -42,5 +45,5 @@ data class PaymentSession(
         val authorizationTimeoutAt: Instant
     )
 
-    data class Rounting(val ciNotificationUrl: String, val layerPosPSPUrl: String)
+    data class Routing(val ciNotificationUrl: String, val layerPosPSPUrl: String)
 }

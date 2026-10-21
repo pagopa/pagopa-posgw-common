@@ -1,4 +1,4 @@
-package it.pagopa.posgw.common.documents.v1.sessions
+package it.pagopa.posgw.common.repositories.redis.v1
 
 import it.pagopa.posgw.common.domain.v1.sessions.SessionStatus
 import java.time.Instant
@@ -24,7 +24,7 @@ class PaymentSessionTest {
                     PaymentSession.LifeCycle(
                         createdAt, activationTimeoutAt, authorizationTimeoutAt),
                 routing =
-                    PaymentSession.Rounting("https://ci.example/notify", "https://pos.example"),
+                    PaymentSession.Routing("https://ci.example/notify", "https://pos.example"),
             )
 
         assertEquals("session-1", paymentSession.sessionId)
@@ -58,7 +58,7 @@ class PaymentSessionTest {
                         Instant.parse("2026-10-20T10:02:00Z"),
                     ),
                 routing =
-                    PaymentSession.Rounting("https://ci.example/notify", "https://pos.example"),
+                    PaymentSession.Routing("https://ci.example/notify", "https://pos.example"),
             )
         val identicalCopy = paymentSession.copy()
 
