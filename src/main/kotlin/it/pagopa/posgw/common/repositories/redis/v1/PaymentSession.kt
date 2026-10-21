@@ -1,6 +1,5 @@
 package it.pagopa.posgw.common.repositories.redis.v1
 
-import it.pagopa.posgw.common.domain.v1.sessions.SessionStatus
 import java.time.Instant
 import org.springframework.data.annotation.Id
 import org.springframework.data.redis.core.RedisHash
@@ -21,7 +20,7 @@ import org.springframework.data.redis.core.RedisHash
 @RedisHash(value = "session")
 data class PaymentSession(
     @Id val sessionId: String,
-    val status: SessionStatus,
+    val status: String,
     val correlationId: String,
     val integrationType: IntegrationType,
     val pos: Pos,

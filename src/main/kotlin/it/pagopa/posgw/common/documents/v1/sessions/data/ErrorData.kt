@@ -1,7 +1,5 @@
 package it.pagopa.posgw.common.documents.v1.sessions.data
 
-import it.pagopa.posgw.common.domain.v1.sessions.SessionStatus
-
 /**
  * Error details and the session status at which the error occurred.
  *
@@ -9,4 +7,4 @@ import it.pagopa.posgw.common.domain.v1.sessions.SessionStatus
  * @param errorCode code identifying the error
  * @param errorMessage human-readable description of the error
  */
-data class ErrorData(val atStatus: SessionStatus, val errorCode: String, val errorMessage: String)
+data class ErrorData(val atStatus: String, val errorCode: String, val errorMessage: String)
