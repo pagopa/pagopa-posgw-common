@@ -1,6 +1,5 @@
 package it.pagopa.posgw.common.repositories.redis.v1
 
-import it.pagopa.posgw.common.domain.v1.sessions.SessionStatus
 import java.time.Instant
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -15,7 +14,7 @@ class PaymentSessionTest {
         val paymentSession =
             PaymentSession(
                 sessionId = "session-1",
-                status = SessionStatus.TRANSACTION_ACTIVATED,
+                status = "TRANSACTION_ACTIVATED",
                 correlationId = "correlation-1",
                 integrationType = PaymentSession.IntegrationType.STANDARD,
                 pos = PaymentSession.Pos("terminal-1"),
@@ -28,7 +27,7 @@ class PaymentSessionTest {
             )
 
         assertEquals("session-1", paymentSession.sessionId)
-        assertEquals(SessionStatus.TRANSACTION_ACTIVATED, paymentSession.status)
+        assertEquals("TRANSACTION_ACTIVATED", paymentSession.status)
         assertEquals("correlation-1", paymentSession.correlationId)
         assertEquals(PaymentSession.IntegrationType.STANDARD, paymentSession.integrationType)
         assertEquals("terminal-1", paymentSession.pos.terminalId)
@@ -46,7 +45,7 @@ class PaymentSessionTest {
         val paymentSession =
             PaymentSession(
                 sessionId = "session-1",
-                status = SessionStatus.INITIALIZED,
+                status = "INITIALIZED",
                 correlationId = "correlation-1",
                 integrationType = PaymentSession.IntegrationType.LEGACY,
                 pos = PaymentSession.Pos("terminal-1"),

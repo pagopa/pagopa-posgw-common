@@ -8,7 +8,6 @@ import it.pagopa.posgw.common.documents.v1.sessions.data.EcommNtfErrorData
 import it.pagopa.posgw.common.documents.v1.sessions.data.ErrorData
 import it.pagopa.posgw.common.documents.v1.sessions.data.TransactionActivatedData
 import it.pagopa.posgw.common.documents.v1.sessions.events.CiNotifiedEvent
-import it.pagopa.posgw.common.domain.v1.sessions.SessionStatus
 import java.time.Instant
 import java.util.UUID
 import kotlin.test.Test
@@ -27,14 +26,14 @@ class SessionViewTest {
             SessionView(
                 id = "session-1",
                 correlationId = "correlation-1",
-                status = SessionStatus.INITIALIZED,
+                status = "INITIALIZED",
                 createdAt = createdAt,
                 updatedAt = updatedAt,
             )
 
         assertEquals("session-1", view.id)
         assertEquals("correlation-1", view.correlationId)
-        assertEquals(SessionStatus.INITIALIZED, view.status)
+        assertEquals("INITIALIZED", view.status)
         assertEquals(createdAt, view.createdAt)
         assertEquals(updatedAt, view.updatedAt)
         assertTrue(view.pspList.isEmpty())
@@ -84,7 +83,7 @@ class SessionViewTest {
             )
         val authorizationRequest = AuthRequestedData("terminal-1", "authorization-1")
         val notification = SessionView.Notification(updatedAt, createdAt)
-        val error = ErrorData(SessionStatus.ERROR, "E01", "session failed")
+        val error = ErrorData("ERROR", "E01", "session failed")
         val authRequestError = AuthRequestErrorData("E02", "authorization failed")
         val ciNtfError = CiNtfErrorData("E03", "CI notification failed")
         val ecommNtfError = EcommNtfErrorData("E04", "eCommerce notification failed")
@@ -94,7 +93,7 @@ class SessionViewTest {
             SessionView(
                 id = "session-1",
                 correlationId = "correlation-1",
-                status = SessionStatus.ERROR,
+                status = "ERROR",
                 createdAt = createdAt,
                 updatedAt = updatedAt,
                 pspList = psps,

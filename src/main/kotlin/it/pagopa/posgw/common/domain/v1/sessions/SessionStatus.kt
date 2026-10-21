@@ -17,9 +17,5 @@ enum class SessionStatus {
     ECOMM_NOTIFIED,
     ERROR,
     EXPIRED_TO_RECONCILE,
-    EXPIRED;
-
-    /** The enum entry name, suitable for status serialization. */
-    val status: String
-        get() = name
+    EXPIRED
 }

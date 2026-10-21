@@ -1,6 +1,7 @@
 package it.pagopa.posgw.common.documents.v1.sessions.data
 
-import it.pagopa.posgw.common.domain.v1.Psp
+import it.pagopa.posgw.common.domain.v1.BrokerId
+import it.pagopa.posgw.common.domain.v1.ChannelId
 
 /**
  * Data captured when a payment session is initialized.
@@ -28,4 +29,13 @@ data class SessionInitializedData(
         val logicalOffice: String,
         val workStation: String,
     )
+
+    /**
+     * Payment service provider configured for a broker and payment channel.
+     *
+     * @property id Provider identifier.
+     * @property brokerId Identifier of the provider's broker.
+     * @property channelId Identifier of the provider's payment channel.
+     */
+    data class Psp(var id: String, var brokerId: BrokerId, var channelId: ChannelId)
 }

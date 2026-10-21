@@ -8,7 +8,6 @@ import it.pagopa.posgw.common.documents.v1.sessions.data.DebtPosition
 import it.pagopa.posgw.common.documents.v1.sessions.data.EcommNtfErrorData
 import it.pagopa.posgw.common.documents.v1.sessions.data.ErrorData
 import it.pagopa.posgw.common.documents.v1.sessions.data.TransactionActivatedData
-import it.pagopa.posgw.common.domain.v1.sessions.SessionStatus
 import java.time.Instant
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
@@ -36,7 +35,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 open class SessionView(
     @Id open val id: String,
     open val correlationId: String,
-    val status: SessionStatus,
+    val status: String,
     val createdAt: Instant,
     val updatedAt: Instant,
     val pspList: List<Psp> = emptyList(),
