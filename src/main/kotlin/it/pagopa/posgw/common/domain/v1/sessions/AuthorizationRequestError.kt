@@ -16,11 +16,11 @@ import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithTransactio
  *
  * **Created from:**
  * - [TransactionActivated] via [AuthRequestErrorEvent]
- * - [AuthorizationRequestedError] via [AuthRequestRetriedEvent]
+ * - [AuthorizationRequestError] via [AuthRequestRetriedEvent]
  *
  * **Transitions:**
  * - [AuthorizationRequested] via [AuthRequestedEvent]
- * - [AuthorizationRequestedError] via [AuthRequestRetriedEvent]
+ * - [AuthorizationRequestError] via [AuthRequestRetriedEvent]
  * - [Error] via [ErrorEvent]
  * - [ExpiredToReconcile] via [ExpiredEvent]
  *
@@ -29,7 +29,7 @@ import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithTransactio
  * @param authRequestErrorData data describing the request failure
  * @param authRequestRetriedData latest retry data, or `null` before a retry
  */
-class AuthorizationRequestedError
+class AuthorizationRequestError
 private constructor(
     sessionWithTransactionAct: BaseSessionWithTransactionAct,
     sourceEvent: SessionEvent<*>,
@@ -68,7 +68,7 @@ private constructor(
     override fun applyEvent(event: SessionEvent<*>): Session =
         when (event) {
             is AuthRequestedEvent -> AuthorizationRequested(this, event)
-            is AuthRequestRetriedEvent -> AuthorizationRequestedError(this, event)
+            is AuthRequestRetriedEvent -> AuthorizationRequestError(this, event)
             is ErrorEvent -> Error(this, event)
             is ExpiredEvent -> ExpiredToReconcile(this, event)
             else -> this

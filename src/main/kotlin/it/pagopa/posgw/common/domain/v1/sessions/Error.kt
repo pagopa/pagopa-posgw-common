@@ -10,7 +10,7 @@ import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionInitialized
  * Terminal session state created when a session-level error occurs.
  *
  * **Created from:** [Initialized], [DebtPositionCreated], [TransactionActivated], or
- * [AuthorizationRequestedError] via [ErrorEvent].
+ * [AuthorizationRequestError] via [ErrorEvent].
  *
  * **Transitions:** None; later events leave this state unchanged.
  *

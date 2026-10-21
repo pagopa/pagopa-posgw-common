@@ -10,8 +10,8 @@ import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithTransactio
 /**
  * Session state awaiting reconciliation after expiry during transaction processing.
  *
- * **Created from:** [AuthorizationRequested], [AuthorizationRequestedError], or [CiNotifyExpired]
- * via [ExpiredEvent].
+ * **Created from:** [AuthorizationRequested], [AuthorizationRequestError], or [CiNotifyExpired] via
+ * [ExpiredEvent].
  *
  * **Transitions:**
  * - [Reconciled] via [ReconciledEvent]

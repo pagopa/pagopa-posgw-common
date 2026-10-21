@@ -171,7 +171,7 @@ class SessionTest {
 
         val requestErrorEvent = authRequestErrorEvent()
         val requestErrorState =
-            assertIs<AuthorizationRequestedError>(transactionState.applyEvent(requestErrorEvent))
+            assertIs<AuthorizationRequestError>(transactionState.applyEvent(requestErrorEvent))
         assertPreviousSession(requestErrorState, transactionState)
         assertEquals(SessionStatus.AUTH_REQUEST_ERROR, requestErrorState.status)
         assertEquals(requestErrorEvent.timestamp, requestErrorState.updatedAt)
@@ -240,7 +240,7 @@ class SessionTest {
 
         val retriedEvent = authRequestRetriedEvent()
         val retriedState =
-            assertIs<AuthorizationRequestedError>(requestErrorState.applyEvent(retriedEvent))
+            assertIs<AuthorizationRequestError>(requestErrorState.applyEvent(retriedEvent))
         assertPreviousSession(retriedState, requestErrorState)
         assertEquals(SessionStatus.AUTH_REQUEST_ERROR, retriedState.status)
         assertEquals(retriedEvent.data, retriedState.authRequestRetriedData)
@@ -648,7 +648,7 @@ class SessionTest {
         )
 
     private fun authorizationRequestedErrorState() =
-        assertIs<AuthorizationRequestedError>(
+        assertIs<AuthorizationRequestError>(
             transactionActivatedState().applyEvent(authRequestErrorEvent()),
         )
 

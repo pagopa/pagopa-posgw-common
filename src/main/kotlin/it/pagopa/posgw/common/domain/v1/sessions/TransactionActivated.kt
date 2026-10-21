@@ -16,7 +16,7 @@ import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithTransactio
  *
  * **Transitions:**
  * - [AuthorizationRequested] via [AuthRequestedEvent]
- * - [AuthorizationRequestedError] via [AuthRequestErrorEvent]
+ * - [AuthorizationRequestError] via [AuthRequestErrorEvent]
  * - [Error] via [ErrorEvent]
  * - [Expired] via [ExpiredEvent]
  *
@@ -35,7 +35,7 @@ class TransactionActivated(session: BaseSessionInitialized, event: TransactionAc
     override fun applyEvent(event: SessionEvent<*>): Session =
         when (event) {
             is AuthRequestedEvent -> AuthorizationRequested(this, event)
-            is AuthRequestErrorEvent -> AuthorizationRequestedError(this, event)
+            is AuthRequestErrorEvent -> AuthorizationRequestError(this, event)
             is ErrorEvent -> Error(this, event)
             is ExpiredEvent -> Expired(this, event)
             else -> this
