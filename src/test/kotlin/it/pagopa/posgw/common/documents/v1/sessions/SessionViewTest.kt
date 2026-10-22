@@ -6,6 +6,7 @@ import it.pagopa.posgw.common.documents.v1.sessions.data.CiNtfErrorData
 import it.pagopa.posgw.common.documents.v1.sessions.data.DebtPosition
 import it.pagopa.posgw.common.documents.v1.sessions.data.EcommNtfErrorData
 import it.pagopa.posgw.common.documents.v1.sessions.data.ErrorData
+import it.pagopa.posgw.common.documents.v1.sessions.data.Psp
 import it.pagopa.posgw.common.documents.v1.sessions.data.TransactionActivatedData
 import it.pagopa.posgw.common.documents.v1.sessions.events.CiNotifiedEvent
 import java.time.Instant
@@ -52,7 +53,7 @@ class SessionViewTest {
     fun `nested psp and notification values expose their fields`() {
         val eCommerceNotifiedAt = Instant.parse("2026-10-19T10:02:00Z")
         val ciNotifiedAt = Instant.parse("2026-10-19T10:03:00Z")
-        val psp = SessionView.Psp("psp-1", "broker-1", "channel-1")
+        val psp = Psp("psp-1", "broker-1", "channel-1")
         val notification = SessionView.Notification(eCommerceNotifiedAt, ciNotifiedAt)
 
         assertEquals("psp-1", psp.id)
@@ -66,7 +67,7 @@ class SessionViewTest {
     fun `keeps populated session details`() {
         val createdAt = Instant.parse("2026-10-19T10:00:00Z")
         val updatedAt = Instant.parse("2026-10-19T10:01:00Z")
-        val psps = listOf(SessionView.Psp("psp-1", "broker-1", "channel-1"))
+        val psps = listOf(Psp("psp-1", "broker-1", "channel-1"))
         val positions = listOf(DebtPosition("iupd-1", "rpt-1", "hashed-code"))
         val transaction =
             TransactionActivatedData(

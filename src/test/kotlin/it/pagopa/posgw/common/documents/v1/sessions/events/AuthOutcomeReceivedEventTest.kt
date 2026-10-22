@@ -1,7 +1,7 @@
 package it.pagopa.posgw.common.documents.v1.sessions.events
 
 import it.pagopa.posgw.common.documents.v1.sessions.data.AuthOutcomeReceivedData
-import it.pagopa.posgw.common.documents.v1.sessions.data.CardDetails
+import it.pagopa.posgw.common.documents.v1.sessions.data.InstrumentDetails.CardDetails
 import java.util.UUID
 import kotlin.test.Test
 
