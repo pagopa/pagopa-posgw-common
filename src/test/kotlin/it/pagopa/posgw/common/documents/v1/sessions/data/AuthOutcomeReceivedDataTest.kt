@@ -7,7 +7,7 @@ class AuthOutcomeReceivedDataTest {
     @Test
     fun `keeps authorization and instrument details`() {
         val authDetails = AuthOutcomeReceivedData.AuthDetails("AUTHORIZED", "rrn-123", "auth-123")
-        val instrumentDetails = CardDetails("VISA", "1234", "411111")
+        val instrumentDetails = InstrumentDetails.CardDetails("VISA", "1234", "411111")
         val data = AuthOutcomeReceivedData(authDetails, instrumentDetails)
 
         assertEquals("AUTHORIZED", data.authDetails.outcome)

@@ -7,9 +7,9 @@ import kotlin.test.assertIs
 class InstrumentDetailsTest {
     @Test
     fun `card details are available through the sealed base type`() {
-        val details: InstrumentDetails = CardDetails("VISA", "1234", "411111")
+        val details: InstrumentDetails = InstrumentDetails.CardDetails("VISA", "1234", "411111")
 
-        assertEquals("CARD", details.instrumentType)
-        assertIs<CardDetails>(details)
+        assertEquals("CARD", details.instrumentType.name)
+        assertIs<InstrumentDetails.CardDetails>(details)
     }
 }

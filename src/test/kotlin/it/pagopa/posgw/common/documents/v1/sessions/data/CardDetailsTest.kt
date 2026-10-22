@@ -6,12 +6,12 @@ import kotlin.test.assertEquals
 class CardDetailsTest {
     @Test
     fun `exposes card values and card instrument type`() {
-        val details: InstrumentDetails = CardDetails("VISA", "1234", "411111")
-        val cardDetails = details as CardDetails
+        val details: InstrumentDetails = InstrumentDetails.CardDetails("VISA", "1234", "411111")
+        val cardDetails = details as InstrumentDetails.CardDetails
 
         assertEquals("VISA", cardDetails.brand)
         assertEquals("1234", cardDetails.last4Digits)
         assertEquals("411111", cardDetails.bin)
-        assertEquals("CARD", cardDetails.instrumentType)
+        assertEquals("CARD", cardDetails.instrumentType.name)
     }
 }
