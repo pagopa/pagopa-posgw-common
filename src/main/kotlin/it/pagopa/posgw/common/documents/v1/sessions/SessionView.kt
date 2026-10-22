@@ -7,6 +7,7 @@ import it.pagopa.posgw.common.documents.v1.sessions.data.CiNtfErrorData
 import it.pagopa.posgw.common.documents.v1.sessions.data.DebtPosition
 import it.pagopa.posgw.common.documents.v1.sessions.data.EcommNtfErrorData
 import it.pagopa.posgw.common.documents.v1.sessions.data.ErrorData
+import it.pagopa.posgw.common.documents.v1.sessions.data.Psp
 import it.pagopa.posgw.common.documents.v1.sessions.data.TransactionActivatedData
 import java.time.Instant
 import org.springframework.data.annotation.Id
@@ -49,15 +50,6 @@ open class SessionView(
     val ecommNtfErrorData: EcommNtfErrorData? = null,
     val events: List<BaseSessionEvent<*>> = emptyList(),
 ) {
-    /**
-     * Provider identifiers displayed in the session view.
-     *
-     * @param id provider identifier
-     * @param brokerId broker identifier
-     * @param channelId channel identifier
-     */
-    data class Psp(val id: String, val brokerId: String, val channelId: String)
-
     /**
      * Times when the creditor institution and eCommerce notifications completed.
      *
