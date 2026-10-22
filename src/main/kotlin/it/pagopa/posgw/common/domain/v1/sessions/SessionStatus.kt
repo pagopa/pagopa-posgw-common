@@ -1,5 +1,6 @@
 package it.pagopa.posgw.common.domain.v1.sessions
 
+/** Lifecycle statuses used to identify the current state of a session. */
 enum class SessionStatus {
     INITIALIZED,
     DEBT_POSITION_CREATED,
