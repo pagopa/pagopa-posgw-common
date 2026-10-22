@@ -13,7 +13,7 @@ import it.pagopa.posgw.common.documents.v1.sessions.data.CiNtfRetriedData
  */
 abstract class BaseSessionWithCiNtfExpired(
     sessionWithCiNtfError: BaseSessionWithCiNtfError,
-    val ciExpRetriedData: CiNtfRetriedData?,
+    val ciExpRetriedData: List<CiNtfRetriedData>,
     updatedAt: java.time.Instant
 ) :
     BaseSessionWithCiNtfError(

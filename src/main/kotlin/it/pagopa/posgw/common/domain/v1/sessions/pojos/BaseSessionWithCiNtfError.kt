@@ -14,7 +14,7 @@ import it.pagopa.posgw.common.documents.v1.sessions.data.CiNtfRetriedData
 abstract class BaseSessionWithCiNtfError(
     sessionWithAuthComp: BaseSessionWithAuthComp,
     val ciNtfErrorData: CiNtfErrorData,
-    val ciNtfRetriedData: CiNtfRetriedData?,
+    val ciNtfRetriedData: List<CiNtfRetriedData>,
     updatedAt: java.time.Instant
 ) :
     BaseSessionWithAuthComp(

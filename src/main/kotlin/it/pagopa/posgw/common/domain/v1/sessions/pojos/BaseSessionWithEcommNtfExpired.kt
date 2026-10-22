@@ -14,7 +14,7 @@ import java.time.Instant
  */
 abstract class BaseSessionWithEcommNtfExpired(
     sessionWithEcommNtfError: BaseSessionWithEcommNtfError,
-    val ecommNtfExpiredRetriedData: EcommNtfRetriedData?,
+    val ecommNtfExpiredRetriedData: List<EcommNtfRetriedData>,
     updatedAt: Instant
 ) :
     BaseSessionWithEcommNtfError(

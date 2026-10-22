@@ -15,7 +15,7 @@ import java.time.Instant
 abstract class BaseSessionWithAuthError(
     sessionWithTransactionAct: BaseSessionWithTransactionAct,
     val authRequestErrorData: AuthRequestErrorData,
-    val authRequestRetriedData: AuthRequestRetriedData?,
+    val authRequestRetriedData: List<AuthRequestRetriedData>,
     updatedAt: Instant
 ) :
     BaseSessionWithTransactionAct(

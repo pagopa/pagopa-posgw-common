@@ -2,12 +2,7 @@ package it.pagopa.posgw.common.domain.v1.sessions
 
 import it.pagopa.posgw.common.documents.v1.sessions.data.AuthRequestErrorData
 import it.pagopa.posgw.common.documents.v1.sessions.data.AuthRequestRetriedData
-import it.pagopa.posgw.common.documents.v1.sessions.events.AuthRequestErrorEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.AuthRequestRetriedEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.AuthRequestedEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.ErrorEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.ExpiredEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
+import it.pagopa.posgw.common.documents.v1.sessions.events.*
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithAuthError
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithTransactionAct
 
@@ -34,7 +29,7 @@ private constructor(
     sessionWithTransactionAct: BaseSessionWithTransactionAct,
     sourceEvent: SessionEvent<*>,
     authRequestErrorData: AuthRequestErrorData,
-    authRequestRetriedData: AuthRequestRetriedData?,
+    authRequestRetriedData: List<AuthRequestRetriedData>,
 ) :
     Session,
     BaseSessionWithAuthError(
@@ -53,7 +48,7 @@ private constructor(
         sessionWithTransactionAct = session,
         sourceEvent = event,
         authRequestErrorData = event.data,
-        authRequestRetriedData = null)
+        authRequestRetriedData = emptyList())
 
     /** Creates an updated error state from a retry event while retaining the original error. */
     constructor(
@@ -63,7 +58,7 @@ private constructor(
         sessionWithTransactionAct = session,
         sourceEvent = event,
         authRequestErrorData = session.authRequestErrorData,
-        authRequestRetriedData = event.data)
+        authRequestRetriedData = session.authRequestRetriedData + event.data)
 
     override fun applyEvent(event: SessionEvent<*>): Session =
         when (event) {

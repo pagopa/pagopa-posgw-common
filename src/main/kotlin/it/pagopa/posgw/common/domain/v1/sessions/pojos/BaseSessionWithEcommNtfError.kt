@@ -15,6 +15,6 @@ import java.time.Instant
 abstract class BaseSessionWithEcommNtfError(
     sessionWithCiNotified: BaseSessionWithCiNotified,
     val ecommNotifyErrorData: EcommNtfErrorData,
-    val ecommNotifyRetriedData: EcommNtfRetriedData?,
+    val ecommNotifyRetriedData: List<EcommNtfRetriedData>,
     updatedAt: Instant
 ) : BaseSessionWithCiNotified(sessionWithAuthComp = sessionWithCiNotified, updatedAt = updatedAt)

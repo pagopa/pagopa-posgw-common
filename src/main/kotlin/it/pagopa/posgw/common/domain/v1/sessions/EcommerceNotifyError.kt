@@ -2,11 +2,7 @@ package it.pagopa.posgw.common.domain.v1.sessions
 
 import it.pagopa.posgw.common.documents.v1.sessions.data.EcommNtfErrorData
 import it.pagopa.posgw.common.documents.v1.sessions.data.EcommNtfRetriedData
-import it.pagopa.posgw.common.documents.v1.sessions.events.EcommNotifyEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.EcommNtfErrorEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.EcommNtfExpiredEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.EcommNtfRetriedEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
+import it.pagopa.posgw.common.documents.v1.sessions.events.*
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithCiNotified
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithEcommNtfError
 
@@ -34,7 +30,7 @@ private constructor(
     sessionWithCiNotified: BaseSessionWithCiNotified,
     sourceEvent: SessionEvent<*>,
     ecommNotifyErrorData: EcommNtfErrorData,
-    ecommNotifyRetriedData: EcommNtfRetriedData?
+    ecommNotifyRetriedData: List<EcommNtfRetriedData>
 ) :
     Session,
     BaseSessionWithEcommNtfError(
@@ -52,7 +48,7 @@ private constructor(
         sessionWithCiNotified = session,
         sourceEvent = event,
         ecommNotifyErrorData = event.data,
-        ecommNotifyRetriedData = null)
+        ecommNotifyRetriedData = emptyList())
 
     constructor(
         session: BaseSessionWithEcommNtfError,
@@ -61,7 +57,7 @@ private constructor(
         sessionWithCiNotified = session,
         sourceEvent = event,
         ecommNotifyErrorData = session.ecommNotifyErrorData,
-        ecommNotifyRetriedData = event.data)
+        ecommNotifyRetriedData = session.ecommNotifyRetriedData + event.data)
 
     override fun applyEvent(event: SessionEvent<*>): Session =
         when (event) {

@@ -2,11 +2,7 @@ package it.pagopa.posgw.common.domain.v1.sessions
 
 import it.pagopa.posgw.common.documents.v1.sessions.data.CiNtfErrorData
 import it.pagopa.posgw.common.documents.v1.sessions.data.CiNtfRetriedData
-import it.pagopa.posgw.common.documents.v1.sessions.events.CiNotifiedEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.CiNotifyExpiredEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.CiNtfErrorEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.CiNtfRetriedEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
+import it.pagopa.posgw.common.documents.v1.sessions.events.*
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithAuthComp
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithCiNtfError
 
@@ -34,7 +30,7 @@ private constructor(
     sessionWithAuthComp: BaseSessionWithAuthComp,
     sourceEvent: SessionEvent<*>,
     ciNtfErrorData: CiNtfErrorData,
-    ciNtfRetriedData: CiNtfRetriedData?
+    ciNtfRetriedData: List<CiNtfRetriedData>
 ) :
     Session,
     BaseSessionWithCiNtfError(
@@ -49,7 +45,7 @@ private constructor(
         sessionWithAuthComp = session,
         sourceEvent = event,
         ciNtfErrorData = event.data,
-        ciNtfRetriedData = null)
+        ciNtfRetriedData = emptyList())
 
     constructor(
         session: BaseSessionWithCiNtfError,
@@ -58,7 +54,7 @@ private constructor(
         sessionWithAuthComp = session,
         sourceEvent = event,
         ciNtfErrorData = session.ciNtfErrorData,
-        ciNtfRetriedData = event.data)
+        ciNtfRetriedData = session.ciNtfRetriedData + event.data)
 
     override fun applyEvent(event: SessionEvent<*>): Session {
         return when (event) {

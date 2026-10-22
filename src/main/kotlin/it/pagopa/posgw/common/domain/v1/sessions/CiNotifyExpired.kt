@@ -1,11 +1,7 @@
 package it.pagopa.posgw.common.domain.v1.sessions
 
 import it.pagopa.posgw.common.documents.v1.sessions.data.CiNtfRetriedData
-import it.pagopa.posgw.common.documents.v1.sessions.events.CiNotifiedEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.CiNotifyExpiredEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.CiNtfRetriedEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.ExpiredEvent
-import it.pagopa.posgw.common.documents.v1.sessions.events.SessionEvent
+import it.pagopa.posgw.common.documents.v1.sessions.events.*
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithCiNtfError
 import it.pagopa.posgw.common.domain.v1.sessions.pojos.BaseSessionWithCiNtfExpired
 
@@ -29,7 +25,7 @@ class CiNotifyExpired
 private constructor(
     sessionWithCiNtfError: BaseSessionWithCiNtfError,
     sourceEvent: SessionEvent<*>,
-    ciExpRetriedData: CiNtfRetriedData?
+    ciExpRetriedData: List<CiNtfRetriedData>
 ) :
     Session,
     BaseSessionWithCiNtfExpired(
@@ -38,12 +34,15 @@ private constructor(
     constructor(
         session: BaseSessionWithCiNtfError,
         event: CiNotifyExpiredEvent
-    ) : this(sessionWithCiNtfError = session, sourceEvent = event, ciExpRetriedData = null)
+    ) : this(sessionWithCiNtfError = session, sourceEvent = event, ciExpRetriedData = emptyList())
 
     constructor(
         session: BaseSessionWithCiNtfExpired,
         event: CiNtfRetriedEvent
-    ) : this(sessionWithCiNtfError = session, sourceEvent = event, ciExpRetriedData = event.data)
+    ) : this(
+        sessionWithCiNtfError = session,
+        sourceEvent = event,
+        ciExpRetriedData = session.ciExpRetriedData + event.data)
 
     override val status: SessionStatus = SessionStatus.CI_NTF_EXPIRED
 

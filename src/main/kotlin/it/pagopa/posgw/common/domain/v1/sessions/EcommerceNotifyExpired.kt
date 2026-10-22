@@ -27,7 +27,7 @@ class EcommerceNotifyExpired
 private constructor(
     sessionWithEcommNtfError: BaseSessionWithEcommNtfError,
     sourceEvent: SessionEvent<*>,
-    ecommNtfExpiredRetriedData: EcommNtfRetriedData?
+    ecommNtfExpiredRetriedData: List<EcommNtfRetriedData>
 ) :
     Session,
     BaseSessionWithEcommNtfExpired(
@@ -36,15 +36,15 @@ private constructor(
     constructor(
         session: BaseSessionWithEcommNtfError,
         ecommNtfExpiredEvent: EcommNtfExpiredEvent
-    ) : this(session, sourceEvent = ecommNtfExpiredEvent, ecommNtfExpiredRetriedData = null)
+    ) : this(session, sourceEvent = ecommNtfExpiredEvent, ecommNtfExpiredRetriedData = emptyList())
 
     constructor(
-        session: BaseSessionWithEcommNtfError,
+        session: BaseSessionWithEcommNtfExpired,
         ecommNtfRetriedEvent: EcommNtfRetriedEvent
     ) : this(
         session,
         sourceEvent = ecommNtfRetriedEvent,
-        ecommNtfExpiredRetriedData = ecommNtfRetriedEvent.data)
+        ecommNtfExpiredRetriedData = session.ecommNtfExpiredRetriedData + ecommNtfRetriedEvent.data)
 
     override val status: SessionStatus = SessionStatus.ECOMM_NTF_EXPIRED
 
