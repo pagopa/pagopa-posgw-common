@@ -32,7 +32,7 @@ import org.springframework.data.mongodb.core.mapping.Document
  * @param ecommNtfErrorData eCommerce notification error details, if available
  * @param events events recorded for the session
  */
-@Document("sessions")
+@Document("sessions-view")
 open class SessionView(
     @Id open val id: String,
     open val correlationId: String,

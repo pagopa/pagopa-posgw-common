@@ -122,8 +122,9 @@ class SessionViewTest {
     }
 
     @Test
-    fun `maps to the sessions collection and marks its id`() {
-        assertEquals("sessions", SessionView::class.java.getAnnotation(Document::class.java).value)
+    fun `maps to the sessions-view collection and marks its id`() {
+        assertEquals(
+            "sessions-view", SessionView::class.java.getAnnotation(Document::class.java).value)
         assertTrue(
             SessionView::class.java.getDeclaredField("id").isAnnotationPresent(Id::class.java))
     }
