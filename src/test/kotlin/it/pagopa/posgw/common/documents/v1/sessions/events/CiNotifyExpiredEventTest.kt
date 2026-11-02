@@ -12,7 +12,7 @@ class CiNotifyExpiredEventTest {
             CiNotifyExpiredEvent(sessionId),
             sessionId,
             SessionEventCode.CI_NTF_EXPIRED_EVT,
-            Unit,
+            null,
         )
     }
 }

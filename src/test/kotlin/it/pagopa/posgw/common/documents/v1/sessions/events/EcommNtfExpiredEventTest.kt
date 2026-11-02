@@ -12,7 +12,7 @@ class EcommNtfExpiredEventTest {
             EcommNtfExpiredEvent(sessionId),
             sessionId,
             SessionEventCode.ECOMM_NTF_EXPIRED_EVT,
-            Unit,
+            null,
         )
     }
 }

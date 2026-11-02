@@ -12,7 +12,7 @@ class ReconciledEventTest {
             ReconciledEvent(sessionId),
             sessionId,
             SessionEventCode.RECONCILED_EVT,
-            Unit,
+            null,
         )
     }
 }
