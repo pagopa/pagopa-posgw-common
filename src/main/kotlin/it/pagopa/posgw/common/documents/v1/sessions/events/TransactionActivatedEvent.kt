@@ -1,6 +1,7 @@
 package it.pagopa.posgw.common.documents.v1.sessions.events
 
 import it.pagopa.posgw.common.documents.v1.sessions.data.TransactionActivatedData
+import java.time.Instant
 import java.util.UUID
 import org.springframework.data.mongodb.core.mapping.Document
 
@@ -9,11 +10,15 @@ import org.springframework.data.mongodb.core.mapping.Document
  *
  * @param sessionId identifier of the session
  * @param data transaction activation results
+ * @param id event identifier, generated for new events
+ * @param timestamp time the event occurred, set to now for new events
  */
 @Document(collection = "eventstore")
-data class TransactionActivatedEvent(
-    override val sessionId: UUID,
-    override val data: TransactionActivatedData
+class TransactionActivatedEvent(
+    sessionId: UUID,
+    data: TransactionActivatedData,
+    id: String = UUID.randomUUID().toString(),
+    timestamp: Instant = Instant.now()
 ) :
     SessionEvent<TransactionActivatedData>(
-        eventCode = SessionEventCode.TRANSACTION_ACTIVATED_EVT, data = data, sessionId = sessionId)
+        sessionId, SessionEventCode.TRANSACTION_ACTIVATED_EVT, data, id, timestamp)

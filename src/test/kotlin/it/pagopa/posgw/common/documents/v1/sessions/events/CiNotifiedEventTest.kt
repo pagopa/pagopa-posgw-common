@@ -12,7 +12,7 @@ class CiNotifiedEventTest {
             CiNotifiedEvent(sessionId),
             sessionId,
             SessionEventCode.CI_NOTIFIED_EVT,
-            Unit,
+            null,
         )
     }
 }

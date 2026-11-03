@@ -1,6 +1,7 @@
 package it.pagopa.posgw.common.documents.v1.sessions.events
 
 import it.pagopa.posgw.common.documents.v1.sessions.data.AuthRequestErrorData
+import java.time.Instant
 import java.util.UUID
 import org.springframework.data.mongodb.core.mapping.Document
 
@@ -9,11 +10,15 @@ import org.springframework.data.mongodb.core.mapping.Document
  *
  * @param sessionId identifier of the session
  * @param data authorization request error details
+ * @param id event identifier, generated for new events
+ * @param timestamp time the event occurred, set to now for new events
  */
 @Document(collection = "eventstore")
-data class AuthRequestErrorEvent(
-    override val sessionId: UUID,
-    override val data: AuthRequestErrorData
+class AuthRequestErrorEvent(
+    sessionId: UUID,
+    data: AuthRequestErrorData,
+    id: String = UUID.randomUUID().toString(),
+    timestamp: Instant = Instant.now()
 ) :
     SessionEvent<AuthRequestErrorData>(
-        eventCode = SessionEventCode.AUTH_REQUEST_ERROR_EVT, data = data, sessionId = sessionId)
+        sessionId, SessionEventCode.AUTH_REQUEST_ERROR_EVT, data, id, timestamp)

@@ -12,7 +12,7 @@ class EcommNotifyEventTest {
             EcommNotifyEvent(sessionId),
             sessionId,
             SessionEventCode.ECOMM_NOTIFIED_EVT,
-            Unit,
+            null,
         )
     }
 }
