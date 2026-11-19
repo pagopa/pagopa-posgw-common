@@ -109,6 +109,45 @@ class LogTracingUtilsTest {
     }
 
     @Test
+    fun `attributes override a propagated MDC value only during the log and restore it after`() {
+        val capturingLogger = loggerCapturingMdc()
+        LogTracingUtils.enrichContextMDC(AttributeKeys.CTX_TRANSACTION_ID, "propagated")
+
+        LogTracingUtils.loggerTracingUtils()
+            .attributes(mapOf(AttributeKeys.CTX_TRANSACTION_ID to "override"))
+            .logInfo(capturingLogger.logger, "first")
+
+        assertEquals("override", capturingLogger.mdc["ctx_transaction_id"])
+        assertEquals("propagated", MDC.get("ctx_transaction_id"))
+    }
+
+    @Test
+    fun `propagated MDC values not passed to the builder are untouched by the log`() {
+        val capturingLogger = loggerCapturingMdc()
+        LogTracingUtils.enrichContextMDC(AttributeKeys.PSP_ID, "psp-123")
+
+        LogTracingUtils.loggerTracingUtils().logInfo(capturingLogger.logger, "message")
+
+        assertEquals("psp-123", capturingLogger.mdc["psp_id"])
+        assertEquals("psp-123", MDC.get("psp_id"))
+    }
+
+    @Test
+    fun `a reused builder restores the current propagated value on each log`() {
+        val capturingLogger = loggerCapturingMdc()
+        val builder =
+            LogTracingUtils.loggerTracingUtils()
+                .attributes(mapOf(AttributeKeys.CTX_TRANSACTION_ID to "override"))
+
+        LogTracingUtils.enrichContextMDC(AttributeKeys.CTX_TRANSACTION_ID, "first")
+        builder.logInfo(capturingLogger.logger, "one")
+        LogTracingUtils.enrichContextMDC(AttributeKeys.CTX_TRANSACTION_ID, "second")
+        builder.logInfo(capturingLogger.logger, "two")
+
+        assertEquals("second", MDC.get("ctx_transaction_id"))
+    }
+
+    @Test
     fun `enrichContext supports an attribute and a map of attributes`() {
         LogTracingUtils.enrichContextMDC(AttributeKeys.CTX_REQUEST_ID, "request-123")
         LogTracingUtils.enrichContextMDC(

@@ -25,10 +25,7 @@ class LogTracingUtils private constructor() {
     private var error: Throwable? = null
     private val attributes: EnumMap<AttributeKeys, String> = EnumMap(AttributeKeys::class.java)
     private var details: MutableMap<String, String> = mutableMapOf()
-    val mdcKeys: MutableList<String> = mutableListOf()
-    // List of MDC attributes that are propagated to Context for downstream operations
-    private val mdcContextAttributes: MutableList<String> = mutableListOf()
-
+    private val mdcKeys = mutableMapOf<String, String?>()
     private var logger: Logger? = null
 
     companion object {
@@ -77,6 +74,17 @@ class LogTracingUtils private constructor() {
         }
 
         /**
+         * Adds an attribute to the SLF4J MDC. A null value is replaced with the key's configured
+         * default.
+         *
+         * @param key the standard {@link AttributeKeys} to set
+         * @param value the attribute value, or null to use the key's default
+         */
+        fun enrichContextMDC(key: AttributeKeys, value: String?) {
+            MDC.put(key.key, value ?: key.defaultValue)
+        }
+
+        /**
          * Adds attributes to a Reactor [Context]. Null values are replaced with their configured
          * defaults.
          *
@@ -90,14 +98,16 @@ class LogTracingUtils private constructor() {
             }
 
         /**
-         * Adds an attribute to the SLF4J MDC. A null value is replaced with the key's configured
-         * default.
+         * Adds an attribute to the Reactor [Context]. A null value is replaced with the key's
+         * configured default.
          *
          * @param key the standard {@link AttributeKeys} to set
          * @param value the attribute value, or null to use the key's default
+         * @param context the context to enrich
+         * @return a new [Context] containing the attribute (Reactor contexts are immutable)
          */
-        fun enrichContextMDC(key: AttributeKeys, value: String?) {
-            MDC.put(key.key, value ?: key.defaultValue)
+        fun enrichContextMDC(key: AttributeKeys, value: String?, context: Context): Context {
+            return context.put(key.key, value ?: key.defaultValue)
         }
 
         const val SUCCESS: String = "success"
@@ -284,14 +294,21 @@ class LogTracingUtils private constructor() {
     }
 
     /**
-     * Adds a key-value pair to the MDC and tracks it for post-log cleanup.
+     * Adds a key-value pair to the MDC for the duration of a single log call, saving the value the
+     * key had before (null if it was not set) so it can be restored after logging.
      *
      * @param key the MDC key
      * @param value the MDC value
      */
     private fun addMdcKey(key: String, value: String?) {
+        // Save the previous MDC value only the first time the key is written, so a repeated write
+        // cannot overwrite the original with this builder's own value. A null entry means the key
+        // was not set before. Values propagated through enrichContextMDC are therefore overridden
+        // only for this log and restored afterward.
+        if (key !in mdcKeys) {
+            this.mdcKeys[key] = MDC.get(key)
+        }
         MDC.put(key, value)
-        this.mdcKeys.add(key)
     }
 
     /**
@@ -302,7 +319,7 @@ class LogTracingUtils private constructor() {
      * @param loggerLevel the SLF4J log level
      */
     private fun log(loggerLevel: Level) {
-        // Add attributes keys and valus to MDC map
+        // Add attributes keys and values to MDC map
         if (attributes.isNotEmpty()) {
             attributes.forEach { (key, value) -> run { addMdcKey(key.key, value) } }
         }
@@ -335,11 +352,12 @@ class LogTracingUtils private constructor() {
                 Level.TRACE -> logger?.trace(this.message)
             }
         } finally {
-            // Clean up MDC keys after logging, remove only the parameters that are not propagated
-            // to Context for downstream operations
-            this.mdcKeys
-                .filterNot { key -> this.mdcContextAttributes.contains(key) }
-                .forEach { key -> MDC.remove(key) }
+            // Restore the MDC to its state before this log: put back the previous value of keys
+            // that were already set (e.g. propagated by enrichContextMDC) and remove the keys
+            // that this builder added.
+            this.mdcKeys.forEach { (key, value) ->
+                if (value == null) MDC.remove(key) else MDC.put(key, value)
+            }
             this.mdcKeys.clear()
         }
     }
