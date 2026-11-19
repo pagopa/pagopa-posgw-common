@@ -15,6 +15,8 @@ group = "it.pagopa"
 
 version = "1.1.0"
 
+val mockitoKotlinVersion = "6.0.0"
+
 apply(plugin = "com.dipien.semantic-version")
 
 java {
@@ -61,9 +63,12 @@ dependencies {
   implementation("io.projectreactor.netty:reactor-netty")
   implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+  implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
   testImplementation("io.projectreactor:reactor-test")
+  testImplementation("org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion")
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
