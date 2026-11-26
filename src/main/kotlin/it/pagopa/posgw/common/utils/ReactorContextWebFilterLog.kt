@@ -66,8 +66,8 @@ class ReactorContextWebFilterLog {
     }
 
     /**
-     * Writes EVENT_ACTION ("<HTTP method> <path>") into the Reactor context of every request.
-     * An application can replace it by defining its own bean named `reactorContextWebFilter`.
+     * Writes EVENT_ACTION ("<HTTP method> <path>") into the Reactor context of every request. An
+     * application can replace it by defining its own bean named `reactorContextWebFilter`.
      */
     @Bean
     @ConditionalOnMissingBean(name = ["reactorContextWebFilter"])
