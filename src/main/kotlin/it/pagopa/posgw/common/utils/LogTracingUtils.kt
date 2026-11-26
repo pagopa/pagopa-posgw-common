@@ -200,7 +200,10 @@ class LogTracingUtils private constructor() {
             CTX_REQUEST_ID("ctx_request_id", "{requestId-not-found}"),
 
             /** Context key for order id. */
-            CTX_ORDER_ID("ctx_order_id", "{orderId-not-found}");
+            CTX_ORDER_ID("ctx_order_id", "{orderId-not-found}"),
+
+            /** Context key for session id. */
+            CTX_SESSION_ID("ctx_session_id", "{sessionId-not-found}");
 
             val defaultValue: String
 

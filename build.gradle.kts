@@ -16,6 +16,7 @@ group = "it.pagopa"
 version = "1.2.0"
 
 val mockitoKotlinVersion = "6.0.0"
+val MICROMETER_CONTEXT_PROPAGATION_VERSION = "1.2.1"
 
 apply(plugin = "com.dipien.semantic-version")
 
@@ -55,9 +56,11 @@ publishing {
 }
 
 dependencies {
+  implementation("io.micrometer:context-propagation:${MICROMETER_CONTEXT_PROPAGATION_VERSION}")
   implementation("org.springframework.boot:spring-boot-starter")
   implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
   implementation("org.springframework.boot:spring-boot-starter-data-redis")
+  implementation("org.springframework.boot:spring-boot-starter-webclient")
   implementation("org.jetbrains.kotlin:kotlin-reflect")
   implementation("io.projectreactor:reactor-core")
   implementation("io.projectreactor.netty:reactor-netty")
