@@ -40,7 +40,6 @@ class ReactorContextWebFilterLog {
             AttributeKeys.EVENT_ACTION.key,
             AttributeKeys.CTX_USER_ID.key,
             AttributeKeys.CORRELATION_ID.key,
-            AttributeKeys.CTX_ORDER_ID.key,
             AttributeKeys.CTX_SESSION_ID.key,
         )
 
